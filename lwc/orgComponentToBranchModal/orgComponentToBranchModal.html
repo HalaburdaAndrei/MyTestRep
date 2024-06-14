@@ -1,0 +1,120 @@
+<!-- Org Component To Branch -->
+<template>
+
+  <c-custom-toast ></c-custom-toast>
+
+  <div class="slds-modal slds-fade-in-open slds-backdrop">
+    <div class={modalClass}>
+      <div class="slds-is-relative">
+        <!------HEADER Section-->
+        <div class="slds-modal__header">
+          <lightning-button-icon icon-name="utility:close"
+                                 alternative-text="Close this window"
+                                 size="large"
+                                 variant="bare-inverse"
+                                 onclick={handleCloseModal}
+                                 class="slds-modal__close">
+          </lightning-button-icon>
+          <h2>Commit to Branch: {stageLabel}</h2>
+        </div>
+
+        <!------Body Section-->
+        <div class={modalBodyClass}>
+          <template if:true={isFirstStage}>
+
+            <template if:true={isShowProgress}>
+              <div class="slds-m-bottom_small">
+                <div class="slds-form-element__label">
+                  Compare with branch...
+                </div>
+                <lightning-progress-bar value={progress}></lightning-progress-bar>
+              </div>
+
+            </template>
+            <div class="slds-is-relative">
+              <template if:true={isLoading}>
+                <lightning-spinner class="z-index_97" alternative-text="Loading" size="medium"></lightning-spinner>
+              </template>
+              <lightning-input label="Organization" disabled="true" value={organizationName}></lightning-input>
+              <lightning-combobox label="Repository"
+                                  value={repositoryId}
+                                  placeholder="Select Repository"
+                                  options={repositoryOptionList}
+                                  onchange={handleChangeRepository}>
+              </lightning-combobox>
+              <c-custom-lookup onsearch={handleLookupSearch}
+                               label="Branch Search"
+                               no-result-label="New branch with this name will be created."
+                               placeholder="Input branch name...">
+              </c-custom-lookup>
+            </div>
+          </template>
+          <template if:false={isFirstStage}>
+            <div class="slds-m-top_small ">
+              <template if:true={isShowProgress}>
+                <div class="slds-m-bottom_small">
+                  <div class="slds-form-element__label">
+                    Commit to branch: committed {countCommittedComponents}/{countComponentsToCommit} components
+                  </div>
+                  <lightning-progress-bar value={progress}></lightning-progress-bar>
+                </div>
+              </template>
+
+              <div class="slds-is-relative">
+                <template if:true={isLoading}>
+                  <lightning-spinner class="z-index_97" alternative-text="Loading" size="medium"></lightning-spinner>
+                </template>
+                <lightning-accordion allow-multiple-sections-open active-section-name={activeSections} class="accordion">
+                  <lightning-accordion-section if:true={isShowCannotBeCommittedTable} name="cannotBeCommittedSection" label="Components that cannot be committed:">
+                    <div class="slds-m-top_small">
+                      <c-component-table data-id="component" table-settings={cannotBeCommittedTableSettings}></c-component-table>
+                    </div>
+                  </lightning-accordion-section>
+
+                  <lightning-accordion-section if:true={conflictComponentList.length} name="conflictSection" label="Components that have conflicts:">
+                    <div class="slds-m-top_small">
+                      <c-component-table data-id="component" table-settings={conflictComponentTableSettings} onaction={handleConflict}></c-component-table>
+                    </div>
+                  </lightning-accordion-section>
+
+                  <lightning-accordion-section if:true={safeComponentList.length} name="safeSection" label="Components that are safe to commit:">
+                    <div class="slds-m-top_small">
+                      <c-component-table data-id="component" class="slds-m-top_small" table-settings={safeComponentTableSettings} onaction={handleConflict}></c-component-table>
+                    </div>
+                  </lightning-accordion-section>
+
+                  <lightning-accordion-section if:true={notCommittedComponentList.length} name="notCommittedSection" label="Components that will not be committed:">
+                    <div class="slds-m-top_small">
+                      <c-component-table data-id="component" class="slds-m-top_small" table-settings={notCommittedComponentTableSettings}></c-component-table>
+                    </div>
+                  </lightning-accordion-section>
+
+                  <lightning-accordion-section if:true={destructiveOrgComponentList.length} name="destructiveSection" label="Destructive components:">
+                    <div class="slds-m-top_small">
+                      <c-component-table data-id="destructive" class="slds-m-top_small" table-settings={destructiveComponentTableSettings}></c-component-table>
+                    </div>
+                  </lightning-accordion-section>
+                </lightning-accordion>
+              </div>
+            </div>
+          </template>
+        </div>
+        <!------Footer Section-->
+        <div class="slds-modal__footer">
+          <lightning-layout horizontal-align="spread">
+            <lightning-layout-item >
+              <lightning-button label="Continue Commit To Branch" variant="brand" onclick={handleContinueCommitToBranch}>
+              </lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item >
+              <lightning-button label="Close" variant="brand" onclick={handleCloseModal}>
+              </lightning-button>
+            </lightning-layout-item>
+          </lightning-layout>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</template>

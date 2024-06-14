@@ -1,0 +1,21 @@
+.modal-body {
+    /*min-height: 450px;*/
+    overflow: initial!important;
+}
+
+.second-stage-modal{
+    width: 90%!important;
+    max-width: 100%!important;
+}
+
+.second-stage-modal-body {
+    height: fit-content;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.accordion {
+    --sds-c-accordion-heading-font-size: 18px;
+    --sds-c-accordion-summary-color-background: rgb(243, 242, 242);
+    --sds-c-accordion-heading-line-height: 1;
+}

@@ -1,0 +1,1663 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>zh_TW</fullName>
+    <customApplications>
+        <description></description>
+        <label><!-- Flosum --></label>
+        <name>Flosum</name>
+    </customApplications>
+    <customApplications>
+        <description></description>
+        <label><!-- Google AdWords --></label>
+        <name>GoogleAdWords</name>
+    </customApplications>
+    <customLabels>
+        <label><!-- Add To Patch Title --></label>
+        <name>Add_To_Patch_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Auto Include All Member Description --></label>
+        <name>Auto_Include_All_Member_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Auto Include All Member Title --></label>
+        <name>Auto_Include_All_Member_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- BackButtonLabel --></label>
+        <name>BackButtonLabel</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Build Organization Label --></label>
+        <name>Build_Organization_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Build Organization Title --></label>
+        <name>Build_Organization_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Changed On --></label>
+        <name>Changed_On</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Code Coverage Check error incorrect test option --></label>
+        <name>Code_Coverage_Check_error_incorrect_test_option</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Comments --></label>
+        <name>Comments</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit Destructive Changes To Repository Description --></label>
+        <name>Commit_Destructive_Changes_To_Repository_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit Select Description --></label>
+        <name>Commit_Select_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit Time column --></label>
+        <name>Commit_Time</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Branch Description 1 --></label>
+        <name>Commit_To_Branch_Description_1</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Branch Description 2 --></label>
+        <name>Commit_To_Branch_Description_2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Branch Description 3 --></label>
+        <name>Commit_To_Branch_Description_3</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Branch Description 4 --></label>
+        <name>Commit_To_Branch_Description_4</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Branch Description 5 --></label>
+        <name>Commit_To_Branch_Description_5</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Branch Label --></label>
+        <name>Commit_To_Branch_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Branch Title --></label>
+        <name>Commit_To_Branch_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Branch Title 2 --></label>
+        <name>Commit_To_Branch_Title_2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Repository Button Label --></label>
+        <name>Commit_To_Repository_Button_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Repository Description --></label>
+        <name>Commit_To_Repository_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit To Repository Label --></label>
+        <name>Commit_To_Repository_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commit the snapshot title --></label>
+        <name>Commit_the_snapshot_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Commiter ID column --></label>
+        <name>Commiter_ID</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Committed By --></label>
+        <name>Committed_By</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Committed On --></label>
+        <name>Committed_On</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Complete Overwrite Protection Button Label --></label>
+        <name>CompleteOverwriteProtectionButtonLabel</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Complete PreDeploy Fix Button Label --></label>
+        <name>CompletePreDeployFixButtonLabel</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Component History Number --></label>
+        <name>Component_History_Number</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Component Name --></label>
+        <name>Component_Name</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Component Type --></label>
+        <name>Component_Type</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Conflict Components Section Description --></label>
+        <name>Conflict_Components_Section_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Conflict Components Section Description 2 --></label>
+        <name>Conflict_Components_Section_Description_2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Conflict Components Section Title --></label>
+        <name>Conflict_Components_Section_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- merged component descr --></label>
+        <name>Conflict_Merge_Components_Section_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- conflict components --></label>
+        <name>Conflict_Merge_Components_Section_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Create Patch Title --></label>
+        <name>Create_Patch_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Create Snapshot Description --></label>
+        <name>Create_Snapshot_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DefaultPathAlreadyExist --></label>
+        <name>DefaultPathAlreadyExist</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DefaultReviewersNote --></label>
+        <name>DefaultReviewersNote</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Default Permission Set Settings --></label>
+        <name>Default_Permission_Set_Settings</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeployPathDualTitle --></label>
+        <name>DeployPathDualTitle</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentDashboardBackSyncDescription --></label>
+        <name>DeploymentDashboardBackSyncDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentDashboardForwardSyncDescription --></label>
+        <name>DeploymentDashboardForwardSyncDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentDashboardHistoryDescription --></label>
+        <name>DeploymentDashboardHistoryDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentDashboardNotInSyncDetail --></label>
+        <name>DeploymentDashboardNotInSyncDetail</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentDashboardOrgDetailsDescription --></label>
+        <name>DeploymentDashboardOrgDetailsDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentDashboardPathDescription --></label>
+        <name>DeploymentDashboardPathDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentDashboardResultsDescription --></label>
+        <name>DeploymentDashboardResultsDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentDashboardSyncDetail --></label>
+        <name>DeploymentDashboardSyncDetail</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentDashboardTabTitle --></label>
+        <name>DeploymentDashboardTabTitle</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentPathAlreadyExistForType --></label>
+        <name>DeploymentPathAlreadyExistForType</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentPathDecription --></label>
+        <name>DeploymentPathDecription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentPathDetails --></label>
+        <name>DeploymentPathDetails</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentPathDetails2 --></label>
+        <name>DeploymentPathDetails2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- DeploymentPathViolation --></label>
+        <name>DeploymentPathViolation</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- destructive components descr --></label>
+        <name>Destructive_Changes_Components_Section_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- destructive components --></label>
+        <name>Destructive_Changes_Components_Section_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Developer --></label>
+        <name>Developer</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Email Template Descritpion --></label>
+        <name>Email_Template_Descritpion</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Email Template Title --></label>
+        <name>Email_Template_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Enable Default Peer Reviewers --></label>
+        <name>Enable_Default_Peer_Reviewers</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Fix The Logo Description --></label>
+        <name>Fix_The_Logo_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Fix The Logo Title --></label>
+        <name>Fix_The_Logo_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Git Credentials section title --></label>
+        <name>Git_Credentials</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Git Credentials Name column --></label>
+        <name>Git_Credentials_Name</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Git enabled label --></label>
+        <name>Git_enabled_label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Go To Commit Button Label --></label>
+        <name>Go_To_Commit_Button_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Heroku service settings title --></label>
+        <name>Heroku_service_settings_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Intelegent_Profile_Branch_Label --></label>
+        <name>Intelegent_Profile_Branch_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Intelegent Profile Deployment Label --></label>
+        <name>Intelegent_Profile_Deployment_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- JSforce Library Error --></label>
+        <name>JSforce_Library_Error</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- LargeDeploymentResult --></label>
+        <name>LargeDeploymentResult</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- List of available components section title --></label>
+        <name>List_of_available_components</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- List of components title --></label>
+        <name>List_of_components_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- LocedBranchDescription --></label>
+        <name>LocedBranchDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- LocedBranchSectionTitle --></label>
+        <name>LocedBranchSectionTitle</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- LockedBranchAvailablePermissions --></label>
+        <name>LockedBranchAvailablePermissions</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- LockedBranchSelectedPermissions --></label>
+        <name>LockedBranchSelectedPermissions</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- LockedBranchSettingTitle --></label>
+        <name>LockedBranchSettingTitle</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Manual Steps Section Description --></label>
+        <name>Manual_Steps_Section_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Manual_Steps_Section_Title --></label>
+        <name>Manual_Steps_Section_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Merge From Multiple Branches Note --></label>
+        <name>Merge_From_Multiple_Branches_Note</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Merge Patches Description --></label>
+        <name>Merge_Patches_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Message column --></label>
+        <name>Message</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Metadata Types Setting Title --></label>
+        <name>Metadata_Types_Setting_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Modified In Last Days Label --></label>
+        <name>Modified_In_Last_Days_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- not merged descr --></label>
+        <name>Not_Merge_Components_Section_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- not merged --></label>
+        <name>Not_Merge_Components_Section_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Not Merge Section Description --></label>
+        <name>Not_Merge_Section_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Not Merge Section Title --></label>
+        <name>Not_Merge_Section_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- NoteToSelectReleaseType --></label>
+        <name>NoteToSelectReleaseType</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Number of Components column --></label>
+        <name>Number_of_Components</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- OAuth Authentication Details Title --></label>
+        <name>OAuth_Authentication_Details_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- OneDeploymentIsRequired --></label>
+        <name>OneDeploymentIsRequired</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- A pipeline is currently in progress --></label>
+        <name>Overwrite_Protection_Pipeline_Message</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Pipeline Process Message --></label>
+        <name>Pipeline_Process_Message</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Post Deployment Change --></label>
+        <name>Post_Deployment_Change</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Post Install Applicatoin Description --></label>
+        <name>Post_Install_Applicatoin_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Post Install Applicatoin Description 2 --></label>
+        <name>Post_Install_Applicatoin_Description_2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Post Install Applicatoin Title --></label>
+        <name>Post_Install_Applicatoin_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Post Install Layout Description --></label>
+        <name>Post_Install_Layout_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Post Install Layout Title --></label>
+        <name>Post_Install_Layout_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Post Install Page Description --></label>
+        <name>Post_Install_Page_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Post Install Page Title --></label>
+        <name>Post_Install_Page_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Post Install Profile Description --></label>
+        <name>Post_Install_Profile_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Post Install Profile Title --></label>
+        <name>Post_Install_Profile_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- A pipeline is currently in progress --></label>
+        <name>Pre_Deploy_Fix_Pipeline_Message</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Purge Button Label --></label>
+        <name>Purge_Button_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Purge Description --></label>
+        <name>Purge_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Purge Title --></label>
+        <name>Purge_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- RefreshWarning --></label>
+        <name>RefreshWarning</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Release 2017 Feb Page Title --></label>
+        <name>Release_2017_Feb_Page_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Remote Repository page title --></label>
+        <name>Remote_Repository</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- RR button label --></label>
+        <name>Remote_Repository_Settings_Button_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- RR settings --></label>
+        <name>Remote_Repository_Settings_Section_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- RepoGoToSetupButton --></label>
+        <name>RepoGoToSetupButton</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- RepoRestrictionButtonLabel --></label>
+        <name>RepoRestrictionButtonLabel</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- RepoRestrictionCommitDescription --></label>
+        <name>RepoRestrictionCommitDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- RepoRestrictionDeployDescription --></label>
+        <name>RepoRestrictionDeployDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- RepoRestrictionDescription --></label>
+        <name>RepoRestrictionDescription</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- RepoRestrictionTitle --></label>
+        <name>RepoRestrictionTitle</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Repo Conflict Components Section Description --></label>
+        <name>Repo_Conflict_Components_Section_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Repo Conflict Components Section Description 2 --></label>
+        <name>Repo_Conflict_Components_Section_Description_2</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Repo Not Merge Section Description --></label>
+        <name>Repo_Not_Merge_Section_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Repo Safe To Commit Section Description --></label>
+        <name>Repo_Safe_To_Commit_Section_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Repository Description --></label>
+        <name>Repository_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Reset Settings Button Label --></label>
+        <name>Reset_Settings_Button_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Reset Settings Section Title --></label>
+        <name>Reset_Settings_Section_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Run Test Label --></label>
+        <name>Run_Test_Label</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- SHA1 column --></label>
+        <name>SHA1</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Safe To Commit Section Description --></label>
+        <name>Safe_To_Commit_Section_Description</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Safe To Commit Section Title --></label>
+        <name>Safe_To_Commit_Section_Title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- SelectAReleaseType --></label>
+        <name>SelectAReleaseType</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- SelectOrgForDeploymentPath --></label>
+        <name>SelectOrgForDeploymentPath</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- SelectOrgForDeploymentPathSave --></label>
+        <name>SelectOrgForDeploymentPathSave</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- SelectSourceOrgForDeploymentPath --></label>
+        <name>SelectSourceOrgForDeploymentPath</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- SelectSourceOrgForDeploymentPathSave --></label>
+        <name>SelectSourceOrgForDeploymentPathSave</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Total size of Components column --></label>
+        <name>Size_of_Components</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Snapshot Comparison Title --></label>
+        <name>Snapshot_Comparison_Title</name>
+    </customLabels>
+    <customLabels>
+        <label>Test</label>
+        <name>Test</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- The commit history section title --></label>
+        <name>The_commit_history_title</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Transfer To Patch --></label>
+        <name>Transfer_To_Patch</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Update --></label>
+        <name>Update</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- Version --></label>
+        <name>Version</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- action column --></label>
+        <name>action_column</name>
+    </customLabels>
+    <customLabels>
+        <label><!-- isLinked column --></label>
+        <name>isLinked_column</name>
+    </customLabels>
+    <customLabels>
+        <label>zh_TW</label>
+        <name>zh_TW</name>
+    </customLabels>
+    <customTabs>
+        <label><!-- Deployment Dashboard --></label>
+        <name>Deployment_Dashboard</name>
+    </customTabs>
+    <customTabs>
+        <label><!-- Deployment Manager --></label>
+        <name>Deployment_Manager</name>
+    </customTabs>
+    <customTabs>
+        <label><!-- Google AdWords Setup --></label>
+        <name>GoogleAdWordsSetup</name>
+    </customTabs>
+    <customTabs>
+        <label><!-- Kanban Board --></label>
+        <name>Kanban_Board</name>
+    </customTabs>
+    <customTabs>
+        <label><!-- Source --></label>
+        <name>Repository</name>
+    </customTabs>
+    <customTabs>
+        <label><!-- Search Metadata --></label>
+        <name>Search_Metadata</name>
+    </customTabs>
+    <customTabs>
+        <label><!-- Settings --></label>
+        <name>Settings</name>
+    </customTabs>
+    <customTabs>
+        <label><!-- Comparison --></label>
+        <name>Snapshot_Comparison</name>
+    </customTabs>
+    <flowDefinitions>
+        <flows></flows>
+        <fullName>Flosum_Automation_Flow</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows></flows>
+        <fullName>OnReviewerInsert</fullName>
+    </flowDefinitions>
+    <flowDefinitions>
+        <flows></flows>
+        <fullName>SortJob</fullName>
+    </flowDefinitions>
+    <quickActions>
+        <label><!-- LogACall --></label>
+        <name>LogACall</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewAccount --></label>
+        <name>NewAccount</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewCase --></label>
+        <name>NewCase</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewContact --></label>
+        <name>NewContact</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewEvent --></label>
+        <name>NewEvent</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewGroup --></label>
+        <name>NewGroup</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewLead --></label>
+        <name>NewLead</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewNote --></label>
+        <name>NewNote</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewOpportunity --></label>
+        <name>NewOpportunity</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- NewTask --></label>
+        <name>NewTask</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- SendEmail --></label>
+        <name>SendEmail</name>
+    </quickActions>
+    <reportTypes>
+        <description><!-- AccelQ Test Result Report Type --></description>
+        <label><!-- AccelQ Test Result Report Type --></label>
+        <name>AccelQ_Test_Result_Report_Type</name>
+        <sections>
+            <label><!-- AccelQ One Test Results --></label>
+            <name>AccelQ One Test Results</name>
+        </sections>
+        <sections>
+            <label><!-- AccelQ Test Results --></label>
+            <name>AccelQ Test Results</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Apex PMD Result By Branch --></description>
+        <label><!-- Apex PMD Result By Branch --></label>
+        <name>Apex_PMD_Result_By_Branch</name>
+        <sections>
+            <label><!-- Branches --></label>
+            <name>Branches</name>
+        </sections>
+        <sections>
+            <label><!-- Review Results --></label>
+            <name>Review Results</name>
+        </sections>
+        <sections>
+            <label><!-- Review Violations --></label>
+            <name>Review Violations</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Branches To Component --></description>
+        <label><!-- Branches To Component --></label>
+        <name>Branches_To_Component</name>
+        <sections>
+            <label><!-- Branch Components --></label>
+            <name>Branch Components</name>
+        </sections>
+        <sections>
+            <label><!-- Branches --></label>
+            <name>Branches</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Coaching Activities --></description>
+        <label><!-- Coaching Activities --></label>
+        <name>Coaching_Activities</name>
+        <sections>
+            <label><!-- Activities --></label>
+            <name>Activities</name>
+        </sections>
+        <sections>
+            <label><!-- Coaching --></label>
+            <name>Coaching</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Coaching Feeds --></description>
+        <label><!-- Coaching Feeds --></label>
+        <name>Coaching_Feeds</name>
+        <sections>
+            <label><!-- Coaching --></label>
+            <name>Coaching</name>
+        </sections>
+        <sections>
+            <label><!-- Coaching Feed --></label>
+            <name>Coaching Feed</name>
+        </sections>
+        <sections>
+            <label><!-- Comments --></label>
+            <name>Comments</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- DeploymentToDeploymentManifest --></description>
+        <label><!-- DeploymentToDeploymentManifest --></label>
+        <name>DeploymentToDeploymentManifest</name>
+        <sections>
+            <label><!-- Deployments --></label>
+            <name>Deployments</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Deployment Results --></description>
+        <label><!-- Deployment Results --></label>
+        <name>Deployment_Results</name>
+        <sections>
+            <columns>
+                <label><!-- Branch --></label>
+                <name>Branch</name>
+            </columns>
+            <columns>
+                <label><!-- Branch Name --></label>
+                <name>Branch Name</name>
+            </columns>
+            <columns>
+                <label><!-- Deployed By --></label>
+                <name>Deployed By</name>
+            </columns>
+            <columns>
+                <label><!-- Deployment Completed Date --></label>
+                <name>Deployment Completed Date</name>
+            </columns>
+            <columns>
+                <label><!-- Deployment Date --></label>
+                <name>Deployment Date</name>
+            </columns>
+            <columns>
+                <label><!-- Deployment Start Date --></label>
+                <name>Deployment Start Date</name>
+            </columns>
+            <columns>
+                <label><!-- Story Details --></label>
+                <name>Story Details</name>
+            </columns>
+            <label><!-- Deployment Results --></label>
+            <name>Deployment Results</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Deployment on Production --></description>
+        <label><!-- Deployment on Production --></label>
+        <name>Deployment_on_Production</name>
+        <sections>
+            <label><!-- Orgs --></label>
+            <name>Orgs</name>
+        </sections>
+        <sections>
+            <label><!-- User Stories --></label>
+            <name>User Stories</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Goals --></description>
+        <label><!-- Goals --></label>
+        <name>Goals</name>
+        <sections>
+            <columns>
+                <label><!-- Department --></label>
+                <name>Department</name>
+            </columns>
+            <columns>
+                <label><!-- Division --></label>
+                <name>Division</name>
+            </columns>
+            <columns>
+                <label><!-- Employee Number --></label>
+                <name>Employee Number</name>
+            </columns>
+            <columns>
+                <label><!-- Manager --></label>
+                <name>Manager</name>
+            </columns>
+            <columns>
+                <label><!-- Owner --></label>
+                <name>Owner</name>
+            </columns>
+            <label><!-- Goals --></label>
+            <name>Goals</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Goals Feed --></description>
+        <label><!-- Goals Feed --></label>
+        <name>Goals_Feed</name>
+        <sections>
+            <columns>
+                <label><!-- Link Title --></label>
+                <name>Link Title</name>
+            </columns>
+            <label><!-- Feed --></label>
+            <name>Feed</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Department --></label>
+                <name>Department</name>
+            </columns>
+            <columns>
+                <label><!-- Division --></label>
+                <name>Division</name>
+            </columns>
+            <columns>
+                <label><!-- Employee Number --></label>
+                <name>Employee Number</name>
+            </columns>
+            <columns>
+                <label><!-- Manager --></label>
+                <name>Manager</name>
+            </columns>
+            <columns>
+                <label><!-- Owner --></label>
+                <name>Owner</name>
+            </columns>
+            <label><!-- Goals --></label>
+            <name>Goals</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Goals and Metrics --></description>
+        <label><!-- Goals and Metrics --></label>
+        <name>Goals_and_Metrics</name>
+        <sections>
+            <columns>
+                <label><!-- Owner --></label>
+                <name>Owner</name>
+            </columns>
+            <label><!-- Goals --></label>
+            <name>Goals</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Metric Actual Value --></label>
+                <name>Metric Actual Value</name>
+            </columns>
+            <columns>
+                <label><!-- Metric Completion Date --></label>
+                <name>Metric Completion Date</name>
+            </columns>
+            <columns>
+                <label><!-- Metric Created By --></label>
+                <name>Metric Created By</name>
+            </columns>
+            <columns>
+                <label><!-- Metric Created Date --></label>
+                <name>Metric Created Date</name>
+            </columns>
+            <columns>
+                <label><!-- Metric Due Date --></label>
+                <name>Metric Due Date</name>
+            </columns>
+            <columns>
+                <label><!-- Metric Flagged As --></label>
+                <name>Metric Flagged As</name>
+            </columns>
+            <columns>
+                <label><!-- Metric ID --></label>
+                <name>Metric ID</name>
+            </columns>
+            <columns>
+                <label><!-- Metric Last Modified By --></label>
+                <name>Metric Last Modified By</name>
+            </columns>
+            <columns>
+                <label><!-- Metric Last Modified Date --></label>
+                <name>Metric Last Modified Date</name>
+            </columns>
+            <columns>
+                <label><!-- Metric Name --></label>
+                <name>Metric Name</name>
+            </columns>
+            <columns>
+                <label><!-- Metric Progress --></label>
+                <name>Metric Progress</name>
+            </columns>
+            <columns>
+                <label><!-- Metric Target Value --></label>
+                <name>Metric Target Value</name>
+            </columns>
+            <label><!-- Metrics --></label>
+            <name>Metrics</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Org Permissions --></description>
+        <label><!-- Org Permissions --></label>
+        <name>Org_Permissions</name>
+        <sections>
+            <label><!-- Org Permissions --></label>
+            <name>Org Permissions</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orgs &amp; Deployment Results --></description>
+        <label><!-- Orgs &amp; Deployment Results --></label>
+        <name>Orgs_Deployment_Results</name>
+        <sections>
+            <label><!-- Deployment Results --></label>
+            <name>Deployment Results</name>
+        </sections>
+        <sections>
+            <label><!-- Orgs --></label>
+            <name>Orgs</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orgs To Test Logs --></description>
+        <label><!-- Orgs To Test Logs --></label>
+        <name>Orgs_To_Test_Logs</name>
+        <sections>
+            <label><!-- Orgs --></label>
+            <name>Orgs</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orgs with Snapshots with Metadata Items --></description>
+        <label><!-- Orgs with Snapshots with Metadata Items --></label>
+        <name>Orgs_with_Snapshots_with_Metadata_Items</name>
+        <sections>
+            <label><!-- Components Retrieved --></label>
+            <name>Components Retrieved</name>
+        </sections>
+        <sections>
+            <label><!-- Orgs --></label>
+            <name>Orgs</name>
+        </sections>
+        <sections>
+            <label><!-- Snapshots --></label>
+            <name>Snapshots</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Performance Cycles with Questions --></description>
+        <label><!-- Performance Cycles with Questions --></label>
+        <name>Performance_Cycles_with_Questions</name>
+        <sections>
+            <columns>
+                <label><!-- Multiple Choice Options --></label>
+                <name>Multiple Choice Options</name>
+            </columns>
+            <columns>
+                <label><!-- Question --></label>
+                <name>Question</name>
+            </columns>
+            <label><!-- Feedback Questions --></label>
+            <name>Feedback Questions</name>
+        </sections>
+        <sections>
+            <label><!-- Performance Cycles --></label>
+            <name>Performance Cycles</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Summary Type --></label>
+                <name>Summary Type</name>
+            </columns>
+            <label><!-- Performance Question Sets (performance, self, peer, and skip level details) --></label>
+            <name>Performance Question Sets (performance, self, peer, and skip level details)</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Performance Summary Cycles with Requests --></description>
+        <label><!-- Performance Summary Cycles with Requests --></label>
+        <name>Performance_Summary_Cycles_with_Requests</name>
+        <sections>
+            <columns>
+                <label><!-- Cycle State --></label>
+                <name>Cycle State</name>
+            </columns>
+            <label><!-- Performance Cycles --></label>
+            <name>Performance Cycles</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Summary Type --></label>
+                <name>Summary Type</name>
+            </columns>
+            <label><!-- Performance Question Sets (performance, self, peer, and skip level details) --></label>
+            <name>Performance Question Sets (performance, self, peer, and skip level details)</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Confidential --></label>
+                <name>Confidential</name>
+            </columns>
+            <columns>
+                <label><!-- Multiple choice options --></label>
+                <name>Multiple choice options</name>
+            </columns>
+            <columns>
+                <label><!-- Optional --></label>
+                <name>Optional</name>
+            </columns>
+            <columns>
+                <label><!-- Question --></label>
+                <name>Question</name>
+            </columns>
+            <columns>
+                <label><!-- Question Created Date --></label>
+                <name>Question Created Date</name>
+            </columns>
+            <columns>
+                <label><!-- Question Number --></label>
+                <name>Question Number</name>
+            </columns>
+            <columns>
+                <label><!-- Question Type --></label>
+                <name>Question Type</name>
+            </columns>
+            <label><!-- Questions --></label>
+            <name>Questions</name>
+        </sections>
+        <sections>
+            <label><!-- Subject Information --></label>
+            <name>Subject Information</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Date summary was shared with subject --></label>
+                <name>Date summary was shared with subject</name>
+            </columns>
+            <columns>
+                <label><!-- Owner of the subjects performance summary --></label>
+                <name>Owner of the subjects performance summary</name>
+            </columns>
+            <columns>
+                <label><!-- Summary Request State --></label>
+                <name>Summary Request State</name>
+            </columns>
+            <columns>
+                <label><!-- Summary Subject --></label>
+                <name>Summary Subject</name>
+            </columns>
+            <columns>
+                <label><!-- Summary Writer --></label>
+                <name>Summary Writer</name>
+            </columns>
+            <label><!-- Summary Requests --></label>
+            <name>Summary Requests</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Summary Requests: Writer: Full Name --></label>
+                <name>Summary Requests: Writer: Full Name</name>
+            </columns>
+            <columns>
+                <label><!-- Summary Requests: Writer: Title --></label>
+                <name>Summary Requests: Writer: Title</name>
+            </columns>
+            <label><!-- Writer Information --></label>
+            <name>Writer Information</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Performance Summary Requests with Answers --></description>
+        <label><!-- Performance Summary Requests with Answers --></label>
+        <name>Performance_Summary_Requests_with_Answers</name>
+        <sections>
+            <columns>
+                <label><!-- Answers --></label>
+                <name>Answers</name>
+            </columns>
+            <label><!-- Answers --></label>
+            <name>Answers</name>
+        </sections>
+        <sections>
+            <label><!-- Performance Cycles --></label>
+            <name>Performance Cycles</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Summary Type --></label>
+                <name>Summary Type</name>
+            </columns>
+            <label><!-- Performance Question Sets (performance, self, peer, and skip level details) --></label>
+            <name>Performance Question Sets (performance, self, peer, and skip level details)</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Choices --></label>
+                <name>Choices</name>
+            </columns>
+            <columns>
+                <label><!-- Confidential Answer --></label>
+                <name>Confidential Answer</name>
+            </columns>
+            <columns>
+                <label><!-- Question --></label>
+                <name>Question</name>
+            </columns>
+            <columns>
+                <label><!-- Question Number --></label>
+                <name>Question Number</name>
+            </columns>
+            <columns>
+                <label><!-- Question Type --></label>
+                <name>Question Type</name>
+            </columns>
+            <label><!-- Questions --></label>
+            <name>Questions</name>
+        </sections>
+        <sections>
+            <label><!-- Subject Information --></label>
+            <name>Subject Information</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Date summary was shared with subject --></label>
+                <name>Date summary was shared with subject</name>
+            </columns>
+            <columns>
+                <label><!-- Owner of the subjects performance summary --></label>
+                <name>Owner of the subjects performance summary</name>
+            </columns>
+            <columns>
+                <label><!-- State --></label>
+                <name>State</name>
+            </columns>
+            <columns>
+                <label><!-- Summary Subject --></label>
+                <name>Summary Subject</name>
+            </columns>
+            <columns>
+                <label><!-- Summary Writer --></label>
+                <name>Summary Writer</name>
+            </columns>
+            <label><!-- Summary Requests --></label>
+            <name>Summary Requests</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Summary Requests: Writer: Full Name --></label>
+                <name>Summary Requests: Writer: Full Name</name>
+            </columns>
+            <columns>
+                <label><!-- Summary Requests: Writer: Title --></label>
+                <name>Summary Requests: Writer: Title</name>
+            </columns>
+            <label><!-- Writer Information --></label>
+            <name>Writer Information</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Performance summary: users with managers --></description>
+        <label><!-- Performance summary: users with managers --></label>
+        <name>Performance_summary_users_with_managers</name>
+        <sections>
+            <columns>
+                <label><!-- Manager&apos;s Full Name --></label>
+                <name>Manager&apos;s Full Name</name>
+            </columns>
+            <columns>
+                <label><!-- Manager&apos;s Title --></label>
+                <name>Manager&apos;s Title</name>
+            </columns>
+            <label><!-- Users --></label>
+            <name>Users</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- PullReqToPullReqReviewer --></description>
+        <label><!-- PullReqToPullReqReviewer --></label>
+        <name>PullReqToPullReqReviewer</name>
+        <sections>
+            <label><!-- Pull Request Reviewers --></label>
+            <name>Pull Request Reviewers</name>
+        </sections>
+        <sections>
+            <label><!-- Pull Requests --></label>
+            <name>Pull Requests</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Review Result --></description>
+        <label><!-- Review Result --></label>
+        <name>Review_Result</name>
+        <sections>
+            <label><!-- Review Results --></label>
+            <name>Review Results</name>
+        </sections>
+        <sections>
+            <label><!-- Review Violations --></label>
+            <name>Review Violations</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Reward Funds Statistics --></description>
+        <label><!-- Reward Funds Statistics --></label>
+        <name>Reward_Funds</name>
+        <sections>
+            <columns>
+                <label><!-- Fund Created By --></label>
+                <name>Fund Created By</name>
+            </columns>
+            <columns>
+                <label><!-- Fund Created Date --></label>
+                <name>Fund Created Date</name>
+            </columns>
+            <columns>
+                <label><!-- Fund Owner Name --></label>
+                <name>Fund Owner Name</name>
+            </columns>
+            <columns>
+                <label><!-- Fund: Last Modified By --></label>
+                <name>Fund: Last Modified By</name>
+            </columns>
+            <columns>
+                <label><!-- Fund: Last Modified Date --></label>
+                <name>Fund: Last Modified Date</name>
+            </columns>
+            <label><!-- Reward Funds --></label>
+            <name>Reward Funds</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Recipient: Company Name --></label>
+                <name>Recipient: Company Name</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Country --></label>
+                <name>Recipient: Country</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Department --></label>
+                <name>Recipient: Department</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Division --></label>
+                <name>Recipient: Division</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Employee Number --></label>
+                <name>Recipient: Employee Number</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Profile --></label>
+                <name>Recipient: Profile</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Role --></label>
+                <name>Recipient: Role</name>
+            </columns>
+            <label><!-- Reward Recipients --></label>
+            <name>Reward Recipients</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Snapshot --></description>
+        <label><!-- Snapshot --></label>
+        <name>Snapshot</name>
+        <sections>
+            <label><!-- Snapshots --></label>
+            <name>Snapshots</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Story Deployment Track --></description>
+        <label><!-- Story Deployment Track --></label>
+        <name>Story_Deployment_Track</name>
+        <sections>
+            <label><!-- Metadata Logs --></label>
+            <name>Metadata Logs</name>
+        </sections>
+        <sections>
+            <label><!-- Orgs --></label>
+            <name>Orgs</name>
+        </sections>
+        <sections>
+            <label><!-- Story Deployment Manifests --></label>
+            <name>Story Deployment Manifests</name>
+        </sections>
+        <sections>
+            <label><!-- Story Deployments --></label>
+            <name>Story Deployments</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Thanks and Badges --></description>
+        <label><!-- Thanks and Badges --></label>
+        <name>Thanks_and_Badges</name>
+        <sections>
+            <columns>
+                <label><!-- Active Badge --></label>
+                <name>Active Badge</name>
+            </columns>
+            <columns>
+                <label><!-- Badge Given: Created By --></label>
+                <name>Badge Given: Created By</name>
+            </columns>
+            <columns>
+                <label><!-- Badge Given: Created Date --></label>
+                <name>Badge Given: Created Date</name>
+            </columns>
+            <columns>
+                <label><!-- Badge Given: Description --></label>
+                <name>Badge Given: Description</name>
+            </columns>
+            <columns>
+                <label><!-- Badge Given: Last Modified By --></label>
+                <name>Badge Given: Last Modified By</name>
+            </columns>
+            <columns>
+                <label><!-- Badge Given: Last Modified Date --></label>
+                <name>Badge Given: Last Modified Date</name>
+            </columns>
+            <columns>
+                <label><!-- Badge Given: Owner Name --></label>
+                <name>Badge Given: Owner Name</name>
+            </columns>
+            <columns>
+                <label><!-- Badge Given: Reward Fund --></label>
+                <name>Badge Given: Reward Fund</name>
+            </columns>
+            <columns>
+                <label><!-- Badge Name --></label>
+                <name>Badge Name</name>
+            </columns>
+            <columns>
+                <label><!-- Company Wide --></label>
+                <name>Company Wide</name>
+            </columns>
+            <label><!-- Badge Given Details --></label>
+            <name>Badge Given Details</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Giver&apos;s Manager: Department --></label>
+                <name>Giver&apos;s Manager: Department</name>
+            </columns>
+            <columns>
+                <label><!-- Giver&apos;s Manager: Division --></label>
+                <name>Giver&apos;s Manager: Division</name>
+            </columns>
+            <columns>
+                <label><!-- Giver&apos;s Manager: Employee Number --></label>
+                <name>Giver&apos;s Manager: Employee Number</name>
+            </columns>
+            <columns>
+                <label><!-- Giver&apos;s Manager: Full Name --></label>
+                <name>Giver&apos;s Manager: Full Name</name>
+            </columns>
+            <columns>
+                <label><!-- Giver: Country --></label>
+                <name>Giver: Country</name>
+            </columns>
+            <columns>
+                <label><!-- Giver: Department --></label>
+                <name>Giver: Department</name>
+            </columns>
+            <columns>
+                <label><!-- Giver: Division --></label>
+                <name>Giver: Division</name>
+            </columns>
+            <columns>
+                <label><!-- Giver: E-mail --></label>
+                <name>Giver: E-mail</name>
+            </columns>
+            <columns>
+                <label><!-- Giver: Employee Number --></label>
+                <name>Giver: Employee Number</name>
+            </columns>
+            <columns>
+                <label><!-- Giver: Role --></label>
+                <name>Giver: Role</name>
+            </columns>
+            <columns>
+                <label><!-- Giver: State/Province --></label>
+                <name>Giver: State/Province</name>
+            </columns>
+            <columns>
+                <label><!-- Giver: Title --></label>
+                <name>Giver: Title</name>
+            </columns>
+            <columns>
+                <label><!-- Giver: Username --></label>
+                <name>Giver: Username</name>
+            </columns>
+            <columns>
+                <label><!-- Thanks Giver: Full Name --></label>
+                <name>Thanks Giver: Full Name</name>
+            </columns>
+            <label><!-- Giver Data --></label>
+            <name>Giver Data</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Recipient&apos;s Manager: Department --></label>
+                <name>Recipient&apos;s Manager: Department</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient&apos;s Manager: Division --></label>
+                <name>Recipient&apos;s Manager: Division</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient&apos;s Manager: E-mail --></label>
+                <name>Recipient&apos;s Manager: E-mail</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient&apos;s Manager: Employee Number --></label>
+                <name>Recipient&apos;s Manager: Employee Number</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient&apos;s Manager: Full Name --></label>
+                <name>Recipient&apos;s Manager: Full Name</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Company Name --></label>
+                <name>Recipient: Company Name</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Country --></label>
+                <name>Recipient: Country</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Department --></label>
+                <name>Recipient: Department</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Division --></label>
+                <name>Recipient: Division</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: E-mail --></label>
+                <name>Recipient: E-mail</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Employee Number --></label>
+                <name>Recipient: Employee Number</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Full Name --></label>
+                <name>Recipient: Full Name</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Phone --></label>
+                <name>Recipient: Phone</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Role --></label>
+                <name>Recipient: Role</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: State/Province --></label>
+                <name>Recipient: State/Province</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Title --></label>
+                <name>Recipient: Title</name>
+            </columns>
+            <columns>
+                <label><!-- Recipient: Username --></label>
+                <name>Recipient: Username</name>
+            </columns>
+            <label><!-- Recipient Data --></label>
+            <name>Recipient Data</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Thanks Created Date --></label>
+                <name>Thanks Created Date</name>
+            </columns>
+            <columns>
+                <label><!-- Thanks Message --></label>
+                <name>Thanks Message</name>
+            </columns>
+            <columns>
+                <label><!-- Thanks: Created By --></label>
+                <name>Thanks: Created By</name>
+            </columns>
+            <label><!-- Thanks Posted --></label>
+            <name>Thanks Posted</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Tracking Settings History --></description>
+        <label><!-- Tracking Settings History --></label>
+        <name>Tracking_Settings_History</name>
+        <sections>
+            <label><!-- Tracking Setting (Historical) --></label>
+            <name>Tracking Setting (Historical)</name>
+        </sections>
+        <sections>
+            <label><!-- Tracking Settings --></label>
+            <name>Tracking Settings</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Trail Components --></description>
+        <label><!-- Trail Components --></label>
+        <name>Trail_Components</name>
+        <sections>
+            <columns>
+                <label><!-- Branch Name --></label>
+                <name>Branch Name</name>
+            </columns>
+            <columns>
+                <label><!-- Org Name --></label>
+                <name>Org Name</name>
+            </columns>
+            <label><!-- Trail Components --></label>
+            <name>Trail Components</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orchestration Run Logs Spring &apos;24 --></description>
+        <label><!-- Orchestration Run Logs Spring &apos;24 --></label>
+        <name>flow_orchestration_log_ootb_crt_two_four_eight</name>
+        <sections>
+            <label><!-- Orchestration Run Log --></label>
+            <name>Orchestration Run Log</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orchestration Runs Spring &apos;24 --></description>
+        <label><!-- Orchestration Runs Spring &apos;24 --></label>
+        <name>flow_orchestration_run_ootb_crt_two_four_eight</name>
+        <sections>
+            <label><!-- Orchestration Runs --></label>
+            <name>Orchestration Runs</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orchestration Stage Runs Spring &apos;24 --></description>
+        <label><!-- Orchestration Stage Runs Spring &apos;24 --></label>
+        <name>flow_orchestration_stage_run_ootb_crt_two_four_eight</name>
+        <sections>
+            <label><!-- Orchestration Stage Runs --></label>
+            <name>Orchestration Stage Runs</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orchestration Step Runs Spring &apos;24 --></description>
+        <label><!-- Orchestration Step Runs Spring &apos;24 --></label>
+        <name>flow_orchestration_step_run_ootb_crt_two_four_eight</name>
+        <sections>
+            <label><!-- Orchestration Step Runs --></label>
+            <name>Orchestration Step Runs</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Orchestration Work Items Spring &apos;24 --></description>
+        <label><!-- Orchestration Work Items Spring &apos;24 --></label>
+        <name>flow_orchestration_work_item_ootb_crt_two_four_eight</name>
+        <sections>
+            <columns>
+                <label><!-- Orchestration Step Run: Label --></label>
+                <name>Orchestration Step Run: Label</name>
+            </columns>
+            <columns>
+                <label><!-- Orchestration Step Run: Name --></label>
+                <name>Orchestration Step Run: Name</name>
+            </columns>
+            <columns>
+                <label><!-- Orchestration Step Run: Status --></label>
+                <name>Orchestration Step Run: Status</name>
+            </columns>
+            <label><!-- Orchestration Step Runs --></label>
+            <name>Orchestration Step Runs</name>
+        </sections>
+        <sections>
+            <columns>
+                <label><!-- Assigned Group or Queue --></label>
+                <name>Assigned Group or Queue</name>
+            </columns>
+            <columns>
+                <label><!-- Assigned User --></label>
+                <name>Assigned User</name>
+            </columns>
+            <label><!-- Orchestration Work Items --></label>
+            <name>Orchestration Work Items</name>
+        </sections>
+    </reportTypes>
+    <reportTypes>
+        <description><!-- Screen Flows --></description>
+        <label><!-- Screen Flows --></label>
+        <name>screen_flows_prebuilt_crt</name>
+        <sections>
+            <label><!-- Flow Interview Log Entries --></label>
+            <name>Flow Interview Log Entries</name>
+        </sections>
+        <sections>
+            <label><!-- Flow Interview Logs --></label>
+            <name>Flow Interview Logs</name>
+        </sections>
+    </reportTypes>
+</Translations>

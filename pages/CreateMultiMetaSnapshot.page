@@ -1,0 +1,3125 @@
+<apex:page standardController="Organisation__c" extensions="CreateMultiMetaSnapshotController" sidebar="false" doctype="html-5.0">
+    <c:Analytics />
+    <c:TrackPanel />
+    <c:Wait />
+    <apex:slds />
+    <apex:includeLightning />
+    <apex:includeScript value="{!$Resource.X2JS}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ContentEditor, 'beauty/forMatXML.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Utility, 'JS/angular.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.Utility, 'JS/jsforce.min_1.7.0.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.zipp,'res/ga.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.zipp,'res/js/zip.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.zipp,'res/js/workers/deflate.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.zipp,'res/js/workers/inflate.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.zipp,'res/js/workers/z-worker.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jszipmaster, 'jszip-master/zip3.5.0/jszip.min.js')}"/>
+    <script src="../../soap/ajax/52.0/connection.js" type="text/javascript"></script>
+    <style>
+        span#filterLabelId-_help {
+            margin-right: 24px;
+        }
+        td.filterheaderclass {
+            padding-left: 15px;
+        }
+        th.filterheaderclass {
+            padding-left: 15px;
+            color: rgb(79, 74, 96);
+            font-size: 11px;
+        }
+        label.filterLabelLogiclabel {
+            color: rgb(79, 74, 96);
+            font-size: 11px;
+        }
+        .daysLabel{
+            color: rgb(79, 74, 96);
+            font-size: 11px;
+        }
+        .daysAndHours{
+            float: left !important;
+        }
+        .switchLink{
+            float: right;
+        }
+        a.disablePageLink{
+            pointer-events : none;
+        }
+        
+        .message {
+            list-style-type: none;
+        }
+        .message .messageText {
+            color: white !important;
+        }
+        .message .messageText h4{
+            color: white !important;
+        }
+        .message span {
+            color: white !important;
+        }
+        .lbcls {
+            font-weight: 700 !important;
+        }
+        .customMessage {
+            margin-left: 0px !important;
+            margin-top: 0px !important;
+            opacity: 1!important;
+            width: 100%;
+            font-size: 13px;
+            border: 0px;
+            padding-left: 10px;
+        }
+        .imgLookup {
+            height: 27px !important;
+            margin-left: 2%;
+            margin-top: 3px;"
+        }
+        .slds-scope .slds-tabs_default__item.slds-is-active {
+            background: rgba(21,137,238,.1);
+        }
+        h1 {
+            padding: 0 !important;
+            font-family: "Salesforce Sans",Arial,sans-serif !important;
+            font-size: 1.25rem  !important;
+        }
+
+        /* VEEVA STYLES /*
+        /*This styles is need for Veeva create snapshot. Please don't remove it*/
+        .combobox-background button,
+        .combobox-background button,
+        .combobox-background .x-btn,
+        .combobox-background .btn,
+        .combobox-background .btnCancel,
+        .combobox-background .menuButton .menuButtonButton{
+            background: none;
+        }
+        /* /VEEVA STYLES /*
+    </style>
+    
+    <apex:outputPanel layout="block" styleClass="slds-scope">
+        <div id="defaultMsg" />
+        <apex:pagemessages id="msg"/>
+        <apex:outputPanel layout="block" styleClass="slds-page-header">
+            <div class="slds-media">
+                <h1 class="slds-page-header__title slds-truncate slds-align-middle" title="Metadata Deployment">Organization ({!Organisation__c.Name})</h1>
+            </div>
+        </apex:outputPanel>
+        <apex:outputPanel layout="block" styleClass="myapp" rendered="{!isVeevaOrg == false}">
+            <apex:form id="meta" styleClass="slds-form--stacked">
+                <apex:actionfunction action="{!snapshotAction}" reRender="none" name="snapshotAction" onComplete="hide();"></apex:actionfunction>
+                <apex:actionfunction action="{!redirectToSnapshot}" reRender="msg" name="redirectToSnapshot" onComplete="overridePageMessages(); hide();">
+                    <apex:param assignTo="{!snapshotId}" value="" name="snapshotId"/>
+                    <apex:param assignTo="{!IsApexCompleted}" value="" name="isApexCompleted"/>
+                    <apex:param assignTo="{!metadataTypesForBatch}" value="" name="metadataTypesForBatch"/>
+                    <apex:param assignTo="{!filterJSON}" value="" name="filterJSON"/>
+                    <apex:param assignTo="{!noOfDays}" value="" name="noOfDays"/>
+                    <apex:param assignTo="{!noOfHours}" value="" name="noOfHours"/>
+                </apex:actionfunction>
+                <fieldset class="slds-box slds-theme--default">
+                    <div ng-app="snapshotRetrieval" >
+                        <div ng-controller ="RetrieveChangesController" id="angularControllerId">
+                            <div class="ng-cloak">
+                                <fieldset ng-disabled="disableUi">
+                                    <apex:outputPanel html-ng-show="CommitStep == 1" title="Organization ({!Organisation__c.Name})" rendered="{!Organisation__c.Name != null && authDetails.isSuccess && metadataTypeStr != null && metadataTypeStr != ''}">
+                                        <div class="slds-float--right slds-grid" role="group">
+                                            <div class="slds-col slds-p-right_xx-small">
+                                                <apex:commandButton html-ng-click="filterOrgComponents();" html-ng-disabled="disableRetrieveChangesButton" styleClass="slds-button slds-button_neutral" value="Create Snapshot" reRender="none" onClick="overridePageMessages(); return false;"/>
+                                                <apex:outputLink value="/apex/{!$Setup.Credentials__c.Namespace__c}JSSnapshotRetrieval?oid={!Organisation__c.Id}" styleClass="slds-button slds-button_neutral switchLink">Switch to old</apex:outputLink>
+                                            </div>
+                                        </div>
+                                        <apex:outputPanel html-ng-show="!disableRetrieveChangesButton" layout="block">
+                                            <apex:outputPanel styleClass="slds-form-element slds-size--4-of-12" layout="block">
+                                                <apex:outputLabel styleClass="slds-form-element__label slds-text-heading_regular lbcls" value="Snapshot Name"/>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputText styleClass="slds-input slds-text-heading_regular" html-ng-model="snapshotName" value="{!snapName}"/>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <!--Tab Switch-->
+                                            <apex:outputPanel styleClass="slds-form-element slds-size--12-of-12" layout="block">
+                                                <div class="slds-tabs_default" style="margin-top: 10px;">
+                                                    <ul class="slds-tabs_default__nav" role="tablist" style="background: rgba(221, 219, 218, 0.38);">
+                                                        <li class="slds-tabs_default__item snap-tab slds-is-active" title="Pull Snapshot Using Filters" role="presentation" id="snap-tab-1">
+                                                            <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" id="tab-default-2__item">
+                                                                Pull Snapshot Using Filters
+                                                            </a>
+                                                        </li>
+                                                        <li class="slds-tabs_default__item snap-tab" title="Pull Snapshot Using Repository/Branch" role="presentation" id="snap-tab-2">
+                                                            <apex:outputLink html-ng-href="/apex/{!$Setup.Credentials__c.Namespace__c}CreateSnapshotFromRepo?id={!Organisation__c.Id}&snapName={{snapshotName}}" styleClass="slds-tabs_default__link">
+                                                                Pull Snapshot Using Repository/Branch
+                                                            </apex:outputLink>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <!---->
+                                            <apex:outputPanel styleClass="slds-form-element slds-size--4-of-12" layout="block">
+                                                <apex:outputLabel styleClass="slds-form-element__label slds-text-heading_regular lbcls" value="Retrieve changes in the last" />
+                                                <div class="slds-form-element__control slds-grid">
+                                                    <div class="slds-col">
+                                                        <apex:input label="Retrieve changes in the last" id="selectedDays" value="{!lastModifiedInDays}" type="number" html-ng-model="filterDays" html-min="0" required="true" html-max="3650" styleClass="disableitem slds-input slds-text-heading_regular"/>
+                                                    </div>
+                                                    <div class="slds-col slds-m-left--small slds-p-top_xx-small">
+                                                        <apex:outputLabel styleClass="daysLabel lbcls" value="days and"/>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel styleClass="slds-form-element slds-size--4-of-12" layout="block">
+                                                <div class="slds-form-element">
+                                                    <div class="slds-form-element__control slds-grow slds-grid">
+                                                        <div class="slds-select_container slds-col">
+                                                            <select ng-model="selectedDayOption" class="slds-select" id="selectedHour">
+                                                                <option ng-repeat="x in daysOptions" value="{{x}}">{{x}}</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="slds-col slds-m-left--small slds-p-top_xx-small">
+                                                            <apex:outputLabel styleClass="daysLabel lbcls" value="hours"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel styleClass="slds-form-element slds-size--4-of-12 slds-m-bottom--medium slds-m-top_large" layout="block">
+                                                <div class="slds-form-element__control">
+                                                    <span class="slds-checkbox">
+                                                        <apex:inputCheckbox html-ng-model="IsRetrieveStandard" id="divsup" styleclass="sli slds-input"></apex:inputCheckbox>
+                                                        <apex:outputLabel for="divsup" styleClass="slds-checkbox__label">
+                                                            <apex:outputLabel styleClass="lbcls" value="Retrieve standard components" />
+                                                            <span class="slds-checkbox--faux"></span>
+                                                            <span class="slds-form-element__label"></span>
+                                                        </apex:outputLabel>
+                                                    </span>
+													<apex:outputPanel rendered="{!isDisplayOmniStudioRetrieveCheckbox}">
+                                                    <span class="slds-checkbox">
+                                                        <apex:inputCheckbox html-ng-model="IsOnlyActiveOmnistudioComponents" id="divomni" styleclass="sli slds-input"></apex:inputCheckbox>
+                                                        <apex:outputLabel for="divomni" styleClass="slds-checkbox__label">
+                                                            <apex:outputLabel styleClass="lbcls" value="Retrieve Active Omnistudio Components" />
+                                                            <span class="slds-checkbox--faux"></span>
+                                                            <span class="slds-form-element__label"></span>
+                                                        </apex:outputLabel>
+                                                    </span>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <!-- slds-table_fixed-layout -->
+                                            <apex:outputPanel layout="block">
+                                                <table class="slds-table slds-table_bordered  slds-cell-buffer_left" ng-show="filterList.length > 0">
+                                                    <thead>
+                                                        <tr class="slds-text-title_caps">
+                                                            <th scope="col" class="filterheaderclass"></th>
+                                                            <th scope="col" class="filterheaderclass lbcls">Field</th>
+                                                            <th scope="col" class="filterheaderclass lbcls">Operator</th>
+                                                            <th scope="col" class="filterheaderclass lbcls">Value</th>
+                                                            <th scope="col" class="filterheaderclass"></th>
+                                                            <th scope="col" class="filterheaderclass"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="filterRow in filterList">
+                                                            <td class="filterheaderclass">{{ $index+1 +'.'}}</td>
+                                                            <td class="filterheaderclass">
+                                                                <div class="slds-form-element">
+                                                                    <div class="slds-form-element__control">
+                                                                        <div class="slds-select_container">
+                                                                            <select ng-model="filterRow.field" class="slds-select">
+                                                                                <option value="{{''}}">--None--</option>
+                                                                                <option ng-repeat="(key, value) in fieldList" value="{{key}}">{{value}}</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="filterheaderclass">
+                                                                <div class="slds-form-element">
+                                                                    <div class="slds-form-element__control">
+                                                                        <div class="slds-select_container">
+                                                                            <select ng-model="filterRow.operator" class="slds-select">
+                                                                                <option value="{{''}}">--None--</option>
+                                                                                <option ng-repeat="operatorOne in compareList" value="{{operatorOne}}">{{operatorOne}}</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="filterheaderclass">
+                                                                <input type="text" id="jstextboxval{{$index}}" ng-model="filterRow.value" class="tagsclass slds-input slds-text-heading_regular" filterIndex="{{$index}}" size="50"/>
+                                                            </td>
+                                                            <td class="filterheaderclass" ng-show="filterRow.field == 'type'">
+                                                                <a class="{{disableUi == true ? 'disablePageLink' : ''}}" ng-click="createLookupLink(filterRow.field,$index,filterRow.value);">
+                                                                    <img class="imgLookup" src="{!URLFOR($Asset.SLDS, 'assets/icons/utility/search_60.png')}" alt="Metadata type list)" />
+                                                                </a>
+                                                            </td>
+                                                            <td class="filterheaderclass" ng-show="!enableFilterLogic">
+                                                                AND
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="slds-form-element slds-size--4-of-12 slds-m-around_small">
+                                                <a class="{{disableUi == true ? 'disablePageLink' : ''}} slds-text-heading_regular" id="link-2" href="" ng-click="addRowToSearch();">Add Row</a>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel styleClass="slds-box slds-m-bottom--medium" layout="block">
+                                                <div class="slds-card__body slds-card__body_inner">
+                                                    <apex:outputPanel layout="block">
+                                                        <apex:outputPanel styleClass="slds-form-element slds-size--4-of-12 lbcls" layout="block">
+                                                            <apex:outputpanel id="picklist" layout="block">
+                                                                <c:MultiSelectComponent leftLabel="Available Namespace"
+                                                                    leftOption="{!nameSpaceAvailableList}"
+                                                                    rightLabel="Selected Namespace"
+                                                                    rightOption="{!nameSpaceSelectedList}"
+                                                                    size="10"
+                                                                    width="150px"/>
+                                                            </apex:Outputpanel>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </apex:form>
+        </apex:outputPanel>
+        <apex:outputPanel id="veeva-snapshot-app" rendered="{!isVeevaOrg}">
+            <div id="veeva-lwc-app">
+            </div>
+        </apex:outputPanel>
+    </apex:outputPanel>
+    
+    <script>
+        Visualforce.remoting.timeout = 120000;
+        sforce.connection.sessionId='{!GETSESSIONID()}';
+        zip.workerScriptsPath = "{!URLFOR($Resource.zipp,'res/js/workers')}/";
+        var zipFileEntry, zipWriter, writer, creationMethod, URL = window.webkitURL || window.mozURL || window.URL;
+
+        var bundleTypes = {};
+        bundleTypes['AuraDefinitionBundle'] = 'AuraDefinitionBundle';
+        bundleTypes['LightningComponentBundle'] = 'LightningComponentBundle';
+        bundleTypes['ExperienceBundle'] = 'ExperienceBundle';
+        bundleTypes['WaveTemplateBundle'] = 'WaveTemplateBundle';
+        bundleTypes['DigitalExperience'] = 'DigitalExperience';
+        bundleTypes['DigitalExperienceBundle'] = 'DigitalExperienceBundle';
+
+        var JSRetrievalLog = '';
+
+        function addToJSLog(addTXT){
+            JSRetrievalLog += new Date().toLocaleString()+':  '+addTXT+'\n';
+        }
+
+        $( document ).ready(function() {
+            show();
+            if (!{!isVeevaOrg}) {
+				snapshotAction();
+            } else {
+            	// hide();
+            	addVeevaApp();
+            }
+        });
+
+        function addVeevaApp() {
+        	const namespacePrefix = '{!namespacePrefix}'.length ? '{!namespacePrefix}' : 'c';
+			$Lightning.use(`${namespacePrefix}:LightningOutApp`, function () {
+				$Lightning.createComponent(
+					`${namespacePrefix}:veevaCreateSnapshot`,
+					{organisationId: '{!JSENCODE(orgRec.Id)}', defaultFilterJSON: '{!JSENCODE(defaultFilterJSON)}'},
+					'veeva-lwc-app',
+					function (cmp) {
+						hide();
+                    });
+			});
+        }
+                      
+        var myApp = angular.module("snapshotRetrieval", []);
+        myApp.controller("RetrieveChangesController", ['$scope','$q',function($scope, $q) {
+            /****************************Default Properties*******************************/
+            $scope.packagePermissions = {
+                CustomObject        : [],
+                ApexClass           : [],
+                ApexPage            : [],
+                Layout              : [],
+                CustomTab           : [],
+                CustomApplication   : [],
+                ExternalDataSource  : [],
+                CustomPermission    : [],
+                CustomField         : [],
+                RecordType          : [],
+                DataCategoryGroup   : [],
+                //Flow                : [],
+                FlowDefinition      : []
+            };
+            $scope.translationTypes = {
+                CustomLabel         : [],
+                Scontrol            : [],
+                CustomApplication   : [],
+                CustomPageWebLink   : [],
+                CustomTab           : [],
+                QuickAction         : [],
+                ReportType          : [],
+                Flow                : [],
+                Prompt              : [],
+                Bot                 : [],
+                BotVersion          : []
+            };
+            $scope.objectTranslationTypes = {
+                CustomField         : [],
+                FieldSet            : [],
+                Layout              : [],
+                QuickAction         : [],
+                RecordType          : [],
+                SharingReason       : [],
+                ValidationRule      : [],
+                WebLink             : [],
+                WorkflowTask        : []
+            };
+            $scope.jsCompTypesRetrievalMap = {
+                // 'Translations':'Translations',
+                // 'CustomObjectTranslation':'CustomObjectTranslation',
+                'Profile':'Profile',
+                'RecordType':'RecordType'                
+            };
+            $scope.apiVersion = {!localApiVersion};
+            $scope.orgId = '{!JSENCODE(orgRec.Id)}';
+            $scope.orgDetailId = '{!JSENCODE(authDetails.details.Id)}';
+            $scope.metadataTypeAvailableStr = '{!JSENCODE(metadataTypeStr)}';
+            $scope.jsMetadataTypeStr = '{!JSENCODE(jsMetadataTypeStr)}';
+            $scope.manageMetadataTypeToRetrieveStr = '{!JSENCODE(manageMetadataTypeToRetrieve)}';
+            $scope.manageMetadataTypeToRetrieveMap = {};
+            $scope.metaTypeLi = [];
+            $scope.selectedTypes = []
+            $scope.disableUi = false;
+            $scope.visibleStateConditionStr = '';
+            $scope.selectedForSnapshotLi = [];
+            $scope.createMetadataIndex = 0;
+            $scope.CommitStep = 1;
+            $scope.snapshotId;
+            $scope.logId;
+            $scope.jsAttachmentId;
+            $scope.snapshotName = '{!JSENCODE(snapName)}';
+            $scope.filterDays = 14;
+            $scope.filterTime;
+            $scope.IsRetrieveStandard = false;
+    		$scope.IsOnlyActiveOmnistudioComponents = {!isDisplayOmniStudioRetrieveCheckbox};
+            $scope.IsRetrievePackagePermissions = false;
+            $scope.queryIndex = 0;
+            //$scope.remainingTypesMap = {};
+            $scope.objectNamesLi = [];
+            $scope.filteredMetaDataItems = {};
+            $scope.selectedMap = {};
+            $scope.requestDetailLi = [];
+            $scope.AsyncIdMap = {};
+            $scope.AsyncIdLi = [];
+            $scope.RemainingLi = [];
+            $scope.AsyncIdIndex = 0;
+            $scope.conn1;
+            $scope.snapshotDetailLog = '';
+            $scope.previousQueryForRoles = '';
+            $scope.componentList = [];
+            $scope.apexTypeMap = {};
+            $scope.jsTypeMap = {};
+            $scope.retrievalType;
+            $scope.selectedNameSpaceMap = {};
+            $scope.metadataTypesNeedRetrievalByBatchLi = [];
+            
+            //days options
+            $scope.selectedDayOption = 'None';
+            $scope.daysOptions = [
+                'None',
+                '1',
+                '3',
+                '6',
+                '12'
+            ];
+                        
+            var tempObj = {};
+            tempObj['fullName'] = 'Component Name';
+            tempObj['type'] = 'Component Type';
+            tempObj['lastModifiedByName'] = 'Changed By';
+            tempObj['lastModifiedDate'] = 'Changed On';
+            tempObj['createdByName'] = 'Created By';
+            tempObj['createdDate'] = 'Created On';
+            $scope.fieldSet = tempObj;
+            
+            $scope.differentQueryMap = {};
+            $scope.differentQueryMap['Document'] = 'Document';
+            $scope.differentQueryMap['Dashboard'] = 'Dashboard';
+            $scope.differentQueryMap['Report'] = 'Report';
+            $scope.differentQueryMap['EmailTemplate'] = 'EmailTemplate';
+            $scope.differentQueryMap['Flow'] = 'Flow';
+            $scope.differentQueryMap['CustomField'] = 'CustomField';
+            $scope.differentQueryMap['SharingOwnerRule'] = 'SharingOwnerRule';
+            $scope.differentQueryMap['SharingCriteriaRule'] = 'SharingCriteriaRule';
+            
+            /**************************************************************************/
+            /****************************Filter Properties*****************************/
+            $scope.enableFilterLogic = false;
+            $scope.filterList = [];
+            $scope.nameSpaceFilter = [];
+            $scope.isNameSpaceSelected = false;
+            $scope.compareList = [];
+            $scope.compareList.push('equals');
+            $scope.compareList.push('not equals');
+            $scope.compareList.push('contains');
+            $scope.compareList.push('starts with');
+            $scope.compareList.push('does not contain');
+            $scope.fieldList = {};
+            $scope.fieldList['type'] = 'Component Type';
+            $scope.fieldList['fullName'] = 'Component Name';
+            $scope.fieldList['lastModifiedByName'] = 'Changed By';
+            //$scope.fieldList['createdByName'] = 'Created By';
+            $scope.mainFilterList = [];
+            
+            /**********************************************************************/
+            /****************************Static Properties*****************************/
+            $scope.manageableStateToRetrieve = {};
+            $scope.manageableStateToRetrieve['released'] = 'released';
+            $scope.manageableStateToRetrieve['unmanaged'] = 'unmanaged';
+            $scope.manageableStateToRetrieve['beta'] = 'beta';
+            $scope.manageableStateToRetrieve[undefined] = 'undefined';
+            
+            $scope.typeToFolderMap = {};
+            $scope.typeToFolderMap['Document'] = 'DocumentFolder';
+            $scope.typeToFolderMap['Dashboard'] = 'DashboardFolder';
+            $scope.typeToFolderMap['Report'] = 'ReportFolder';
+            $scope.typeToFolderMap['EmailTemplate'] = 'EmailFolder';
+            
+            $scope.folderToTypeMap = {};
+            $scope.folderToTypeMap['DocumentFolder'] = 'Document';
+            $scope.folderToTypeMap['DashboardFolder'] = 'Dashboard';
+            $scope.folderToTypeMap['ReportFolder'] = 'Report';
+            $scope.folderToTypeMap['EmailFolder'] = 'EmailTemplate';
+            $scope.folderToTypeMap['EmailTemplateFolder'] = 'EmailTemplate';
+            
+            $scope.manageTypeToRetrieve = {};
+            $scope.manageTypeToRetrieve['CustomField'] = 'CustomField';
+            $scope.manageTypeToRetrieve['Layout'] = 'Layout';
+            
+            $scope.allComponentsMap = {};
+
+            $scope.innerCompTypes = {
+                "CustomField": true,
+                "CustomLabel": true,
+                "CompactLayout": true,
+                "WebLink": true,
+                "RecordType": true,
+                "ListView": true,
+                "FieldSet": true,
+                "AssignmentRule": true,
+                "AutoResponseRule": true,
+                "ValidationRule": true,
+                "WorkflowTask": true,
+                "WorkflowOutboundMessage": true,
+                "WorkflowFieldUpdate": true,
+                "WorkflowKnowledgePublish": true,
+                "WorkflowAlert": true,
+                "WorkflowRule": true,
+                "SharingOwnerRule": true,
+                "SharingCriteriaRule": true,
+                "SharingGuestRule": true,
+                "SharingTerritoryRule": true,
+                "BusinessProcess": true,
+                "SharingReason": true,
+                "EscalationRule": true,
+                "MatchingRule": true,
+                "ManagedTopic": true
+            };
+
+            if('{!JSENCODE(metadataTypeStr)}' != '')
+            {
+                var metaStrLi = $scope.metadataTypeAvailableStr.split(',');
+                for(var listIndex = 0; listIndex < metaStrLi.length; listIndex++)
+                {
+                    $scope.metaTypeLi.push(metaStrLi[listIndex]);
+                    if($scope.typeToFolderMap[metaStrLi[listIndex]] != undefined)
+                        $scope.metaTypeLi.push($scope.typeToFolderMap[metaStrLi[listIndex]]);
+                    if(metaStrLi[listIndex] == 'EmailTemplate') {
+                        $scope.metaTypeLi.push('EmailTemplateFolder');
+                    }
+                }
+                var metaStrLi2 = $scope.jsMetadataTypeStr.split(',');
+                for(var listIndex = 0; listIndex < metaStrLi2.length; listIndex++)
+                {
+                    $scope.jsCompTypesRetrievalMap[metaStrLi2[listIndex]] = metaStrLi2[listIndex];
+                }
+
+                if($scope.manageMetadataTypeToRetrieveStr != undefined && $scope.manageMetadataTypeToRetrieveStr != '' && $scope.manageMetadataTypeToRetrieveStr != '[]') {
+                    var tempCheckMap = JSON.parse($scope.manageMetadataTypeToRetrieveStr);
+                    angular.forEach(tempCheckMap, function(value, key) {
+                        $scope.manageMetadataTypeToRetrieveMap[value] = value;
+                    });
+                }
+            }
+            
+            /****************************Main Methods****************************/
+            //Create snapshot of selected metadata items.
+            $scope.createSnapshot = function() {
+                $scope.showMessage("",'INFO');
+                //$scope.disableUi = true;
+                $scope.createMetadataIndex = 0;
+                $scope.selectedForSnapshotLi = [];
+                
+                $scope.selectedMap = {};
+                $scope.apexTypeMap = {};
+                $scope.jsTypeMap = {};
+                angular.forEach($scope.componentList, function(value, key) {
+                    if(value.checked) {
+                        if($scope.jsCompTypesRetrievalMap[value.type] != undefined
+                            || ($scope.folderToTypeMap[value.type] != undefined 
+                            && $scope.jsCompTypesRetrievalMap[$scope.folderToTypeMap[value.type]] != undefined)
+                        ) {
+                            //Retrieval of Profile and PermissionSet will be by JS.
+                            let selectedLi = [];
+                            let tempType = $scope.folderToTypeMap[value.type] != undefined ? $scope.folderToTypeMap[value.type] : value.type;
+                            if($scope.selectedMap[tempType] != undefined) {
+                                selectedLi = $scope.selectedMap[tempType];
+                            }
+                            selectedLi.push(value);
+                            $scope.selectedMap[tempType] = selectedLi;
+                            $scope.jsTypeMap[tempType] = tempType;
+                        }
+                        else {
+                            $scope.selectedForSnapshotLi.push(value);
+                            $scope.apexTypeMap[value.type] = value.type;
+                        }
+                    }
+                });
+                $scope.showMessage("Creating snapshot...",'INFO');
+                $scope.createMetaDataItemOneByOne();
+            };
+            //To create metadata items in chunks
+            $scope.createMetaDataItemOneByOne = function(){
+                if($scope.createMetadataIndex < $scope.selectedForSnapshotLi.length)
+                {
+                    $scope.showMessage("Creating snapshot...",'INFO');
+                    var metaItemDetailLi = [];
+                    var commitIndex = 0;
+                    for(;(commitIndex < 600 && $scope.createMetadataIndex < $scope.selectedForSnapshotLi.length);)
+                    {
+                        var tempMeta = $scope.selectedForSnapshotLi[$scope.createMetadataIndex];
+                        tempMeta.snapId = $scope.snapshotId;
+                        // exclude duplicates (ticket/1648)
+                        if ($scope.notDuplicate(tempMeta)){
+                               metaItemDetailLi.push(tempMeta);
+                        }
+                        commitIndex++;
+                        $scope.createMetadataIndex++;
+                    }
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.CreateMultiMetaSnapshotController.createMetadataItems}',
+                        JSON.stringify(metaItemDetailLi),
+                        function(r,e){
+                            $scope.$apply(function() {
+                                if(e.status && r) 
+                                {
+                                    if(r.isSuccess)
+                                    {
+                                        $scope.createMetaDataItemOneByOne();
+                                    }
+                                    else
+                                        $scope.showMessage(r.errorMessage,'ERROR');
+                                }
+                                else
+                                {
+                                    $scope.showMessage(e.message,'ERROR');
+                                }
+                            });
+                    });
+                }
+                else
+                {                    
+                    $scope.startJSRetrieval();              
+                }
+            };
+            
+            $scope.startJSRetrieval = function(){
+                if(!angular.equals({}, $scope.jsTypeMap))
+                {
+                    $scope.createRequestForProfileAndPermissionSet();
+                }
+                else
+                {
+                    addToJSLog('JS retrieval completed.');
+                    
+                    var filterDetail = {};
+                    filterDetail.IsRetrieveStandard = $scope.IsRetrieveStandard;
+                    filterDetail.IsOnlyActiveOmnistudioComponents = $scope.IsOnlyActiveOmnistudioComponents;
+                    filterDetail.filterList = $scope.mainFilterList;
+                    
+                    var filterInfoJSON = JSON.stringify(filterDetail);
+                    console.log('$scope.metadataTypesNeedRetrievalByBatchLi',$scope.metadataTypesNeedRetrievalByBatchLi);
+                    $scope.updateJSLog().then(function success() {
+                        redirectToSnapshot($scope.snapshotId, false, JSON.stringify($scope.metadataTypesNeedRetrievalByBatchLi), filterInfoJSON, $scope.filterDays, $scope.selectedDayOption);
+                    });
+                }
+            };
+
+            $scope.finishFilterMetaItems = function() {
+                $scope.showMessage('','INFO');
+                //$scope.$apply(function() {
+                    //$scope.disableUi = false;
+                    $scope.componentList = [];
+                    
+                    angular.forEach($scope.filteredMetaDataItems, function(value, key) {
+                        angular.forEach($scope.filteredMetaDataItems[key], function(metaItem) {
+                            $scope.componentList.push(metaItem);
+                        });
+                    });
+                    
+                    if($scope.componentList.length > 0)
+                    {
+                        for(var index = 0 ; index < $scope.componentList.length  ; index++)
+                        {
+                            $scope.componentList[index].checked = true;
+                        }
+                        $scope.createSnapshot();
+                    }
+                    else
+                    {
+                        addToJSLog('No changed component found.');
+                        addToJSLog('JS retrieval completed.');
+                        console.log('$scope.metadataTypesNeedRetrievalByBatchLi',$scope.metadataTypesNeedRetrievalByBatchLi);
+                        //Snapshot done.
+                        if($scope.metadataTypesNeedRetrievalByBatchLi.length > 0)
+                        {
+                            var filterDetail = {};
+                            filterDetail.IsRetrieveStandard = $scope.IsRetrieveStandard;
+                            filterDetail.IsOnlyActiveOmnistudioComponents = $scope.IsOnlyActiveOmnistudioComponents;
+                            filterDetail.filterList = $scope.mainFilterList;
+                            var filterInfoJSON = JSON.stringify(filterDetail);
+                            
+                            $scope.updateJSLog().then(function success() {
+                                redirectToSnapshot($scope.snapshotId,false, JSON.stringify($scope.metadataTypesNeedRetrievalByBatchLi), filterInfoJSON, $scope.filterDays, $scope.selectedDayOption);
+                            });
+                        }
+                        else
+                        {
+                            var filterDetail = {};
+                            filterDetail.IsRetrieveStandard = $scope.IsRetrieveStandard;
+                            filterDetail.IsOnlyActiveOmnistudioComponents = $scope.IsOnlyActiveOmnistudioComponents;
+                            filterDetail.filterList = $scope.mainFilterList;
+                            var filterInfoJSON = JSON.stringify(filterDetail);
+                            
+                            $scope.updateJSLog().then(function success() {
+                                redirectToSnapshot($scope.snapshotId,true, JSON.stringify($scope.metadataTypesNeedRetrievalByBatchLi), filterInfoJSON, $scope.filterDays, $scope.selectedDayOption);
+                            });
+                        }
+                    }
+                //});
+            };
+            
+            $scope.filterOrgComponents = function() {
+                JSRetrievalLog = '';
+                $scope.filteredMetaDataItems = {};
+                $scope.metadataTypesNeedRetrievalByBatchLi = [];
+                $scope.previousQueryForRoles = '';
+                $scope.disableUi = true;
+                
+                console.log($scope.snapshotName);
+                console.log($scope.filterDays);
+                console.log('$scope.orgId--------'+$scope.orgId);
+                console.log('$scope.orgDetailId--'+$scope.orgDetailId);
+                
+                if($scope.snapshotName != undefined && $scope.snapshotName.trim() != '' )
+                {
+                    $scope.snapshotName = $scope.snapshotName.trim();
+                    if($scope.filterDays != undefined)
+                    {
+                        //Validate filters
+                        var IsFilterEmpty = false;
+                        for(var index=0; index < $scope.filterList.length; index++)
+                        {
+                            var filterRow = $scope.filterList[index];
+                            
+                            if(filterRow != undefined && filterRow.field != undefined && filterRow.field != ''){
+
+                                if(filterRow.operator == undefined || filterRow.operator == '' || filterRow.value == undefined || filterRow.value == ''){
+                                    IsFilterEmpty = true;
+                                }
+                            }
+                        }
+                        if(IsFilterEmpty){
+                            $scope.showMessage('Please select a filter operator or fill a value in the filter.','ERROR');
+                            return;
+                        }
+                        //$scope.defaultFilterType();
+                        $scope.filterSnapshotItems();
+                        $scope.defaultFilterType();
+                        
+                        console.log($scope.selectedTypes);
+                        console.log('Done.');
+                        if($scope.selectedTypes != undefined && $scope.selectedTypes.length > 0)
+                        {
+                            var filterDetail = {};
+                            filterDetail.IsRetrieveStandard = $scope.IsRetrieveStandard;
+                            filterDetail.IsOnlyActiveOmnistudioComponents = $scope.IsOnlyActiveOmnistudioComponents;
+                            filterDetail.filterList = $scope.mainFilterList;
+                            filterDetail.selectedNamespaceSet = [];
+                            let selectedHours = $("#selectedHour").val();
+
+                            $("select[id$='multiselectPanel:rightList'] option").each(function(key,ent) {
+                                filterDetail.selectedNamespaceSet.push(ent.value);
+                            });
+                            if(filterDetail.selectedNamespaceSet.length > 0) {
+                                filterDetail.isNameSpaceSelected = true;
+                            }
+                            var filterInfoJSON = JSON.stringify(filterDetail);
+                              
+                            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CreateMultiMetaSnapshotController.createSnapshot}',
+                                $scope.snapshotName,
+                                $scope.orgId,
+                                $scope.filterDays,
+                                filterInfoJSON,
+                                selectedHours,
+                                JSON.stringify($scope.selectedTypes),
+                                function(r,e){
+                                    if(e.status && r) 
+                                    {
+                                        if(r.isSuccess && r.snapId != undefined)
+                                        {
+                                            if(r.isExternal) {
+                                                window.location = '/'+r.snapId;
+                                                return;
+                                            }
+                                            addToJSLog('Snapshot started at '+new Date().toLocaleString()+' for last '+$scope.filterDays+' days.');
+                                            $scope.$apply(function() {
+                                                $scope.snapshotId = r.snapId;
+                                                $scope.logId = r.logId;
+                                                $scope.jsAttachmentId = r.jsAttachmentId;
+                                                $scope.retrievalType = r.retrievalType;
+                                                $scope.filterTime = $scope.addDaysInCurrentTime(new Date(), -$scope.filterDays);
+                                                if($scope.selectedDayOption != 'None')
+                                                {
+                                                    //return theDate.getTime() + days*24*60*60*1000;
+                                                    var integerSelectedDayOption = parseInt($scope.selectedDayOption) *60*60*1000;
+                                                    console.log('$scope.filterTime--'+$scope.filterTime);
+                                                    $scope.filterTime = $scope.filterTime - integerSelectedDayOption;
+                                                    console.log('$scope.filterTime--'+$scope.filterTime);
+                                                }
+                                                console.log(new Date());
+                                                console.log(new Date().getTime());
+                                                console.log($scope.filterTime);
+                                            });
+                                            console.log('Snapshot created-'+r.snapId);
+                                            $scope.listComponents();
+                                        }
+                                        else
+                                        {
+                                            $scope.$apply(function() {
+                                                $scope.showMessage(r.errorMessage,'ERROR');
+                                            });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        $scope.showMessage(e.message,'ERROR');
+                                    }
+                                    overridePageMessages();
+                            });
+                        }
+                        else
+                        {
+                            $scope.showMessage('Please select a component type.','ERROR');
+                        }
+                    }
+                    else
+                    {
+                        if($scope.filterDays == undefined || $scope.filterDays < 0)
+                            $scope.showMessage('Please enter a positive number between 0 to 3650.','ERROR');
+                    }
+                }
+                else
+                    $scope.showMessage('Please Enter Snapshot Name.','ERROR');
+            };
+            
+            $scope.createRequestForProfileAndPermissionSet = function() {
+                addToJSLog('Processing for retrieval request.');
+                $scope.requestDetailLi = [];
+                console.log('$scope.selectedMap',JSON.stringify($scope.selectedMap));
+                $.each($scope.selectedMap, function( selectedType, tempList) {
+                    if(tempList != undefined){
+                        var requestDetail = {};
+                        requestDetail.MetaType = selectedType;
+                        requestDetail.Items = [];
+                        requestDetail.ItemNames = [];
+                        angular.forEach(tempList, function(value, key) {
+                            if(selectedType == 'Profile' || selectedType == 'PermissionSet' || selectedType == 'CustomObjectTranslation' || selectedType == 'Translations')
+                            {
+                                if(key % 15 == 0 && requestDetail.Items.length > 0){
+                                    $scope.requestDetailLi.push(requestDetail);
+                                    requestDetail = {};
+                                    requestDetail.MetaType = selectedType;
+                                    requestDetail.Items = [];
+                                    requestDetail.ItemNames = [];
+                                }
+                            }
+                            else{
+                                if(requestDetail.Items.length > 1499){
+                                    $scope.requestDetailLi.push(requestDetail);
+                                    requestDetail = {};
+                                    requestDetail.MetaType = selectedType;
+                                    requestDetail.Items = [];
+                                    requestDetail.ItemNames = [];
+                                }
+                            }
+                            requestDetail.Items.push(value);
+                            if (selectedType == 'RecordType' && (!requestDetail.ItemNames.includes(value.fullName.substr(0,value.fullName.indexOf('.'))))){
+                                requestDetail.ItemNames.push(value.fullName.substr(0,value.fullName.indexOf('.')));
+                            }
+                            else if($scope.folderToTypeMap[value.type] != undefined) {
+                                if(value.fullName != undefined && value.fullName.split('/').length > 1) {
+                                    requestDetail.ItemNames.push(value.fullName+'/');
+                                }
+                                else {
+                                    requestDetail.ItemNames.push(value.fullName);
+                                }
+                            }
+                            else{
+                                requestDetail.ItemNames.push(value.fullName);
+                            }
+                        });
+                        if(requestDetail.Items.length > 0)
+                        {
+                            $scope.requestDetailLi.push(requestDetail);
+                        }
+                    }
+                });
+                console.log(JSON.stringify($scope.requestDetailLi));
+                console.log('$scope.requestDetailLi.length--'+$scope.requestDetailLi.length);
+                if($scope.requestDetailLi.length > 0)
+                {
+                    $scope.processRequestForRetrieval();
+                }
+            };
+            
+            $scope.processRequestForRetrieval = function() {
+                if($scope.requestDetailLi.length > 0)
+                {
+                    $scope.AsyncIdMap = {};
+                    $scope.AsyncIdLi = [];
+                    $scope.AsyncIdIndex = 0;
+                    $scope.RemainingLi = [];
+                    $scope.BreakeAsyncLi = [];
+                    var createRequestIndex = 0;
+                    var createRequestOneByOne = function() {
+                        if(createRequestIndex < $scope.requestDetailLi.length)
+                        {
+                            var requestDetail = $scope.requestDetailLi[createRequestIndex];
+                            console.log('requestDetail ', JSON.stringify(requestDetail));
+                            var req = $scope.getRetrieveRequest();
+                            console.log('req ', JSON.stringify(req));
+
+                            var oneType = {};
+                            oneType.name = requestDetail.MetaType == 'RecordType' ? 'CustomObject' : requestDetail.MetaType;
+                            oneType.members = requestDetail.ItemNames;
+                            req.unpackaged.types.push(oneType);
+                            console.log('req.unpackaged.types ', req);
+                            if (requestDetail.MetaType == 'Profile') {
+                                angular.forEach($scope.packagePermissions, function(value, key) {
+                                        if (value != undefined && value.length > 0) {
+                                        var oneType2 = {};
+                                        oneType2.name = key;
+                                        oneType2.members = value;
+                                        req.unpackaged.types.push(oneType2);
+                                    }
+                                });
+                            }
+                            if (requestDetail.MetaType == 'Translations') {
+                                angular.forEach($scope.translationTypes, function(value, key) {
+                                        if (value != undefined && value.length > 0) {
+                                        var oneType2 = {};
+                                        oneType2.name = key;
+                                        oneType2.members = value;
+                                        req.unpackaged.types.push(oneType2);
+                                    }
+                                });
+                            }
+                            if (requestDetail.MetaType == 'CustomObjectTranslation') {
+                                var obNamesMap = {};
+                                angular.forEach(requestDetail.ItemNames, function(objTranslateName, key) {
+
+                                    var parentObjectName = objTranslateName.substring(0,objTranslateName.indexOf('-'));
+                                    //object related translations
+                                    obNamesMap[parentObjectName] = parentObjectName;
+                                });
+                                angular.forEach($scope.objectTranslationTypes, function(value, key) {
+                                    if (value != undefined && value.length > 0) {
+                                        var filterredList = [];
+                                        $.each(value, function( compIndex, compName) {
+                                            var objectName = '';
+                                            if(key == 'CustomField' || key == 'FieldSet' || key == 'RecordType' || key == 'SharingReason' 
+                                                || key == 'ValidationRule' || key == 'WebLink' || key == 'WorkflowTask' || key == 'QuickAction'){
+
+                                                objectName = compName.substring(0,compName.indexOf('.'));
+                                            }
+                                            else if(key == 'Layout'){
+                                                objectName = compName.substring(0,compName.indexOf('-'));
+                                            }
+                                            if(obNamesMap[objectName] != undefined){
+                                                filterredList.push(compName);
+                                            }
+                                        });
+                                        if(filterredList.length > 0){
+                                            var oneType2 = {};
+                                            oneType2.name = key;
+                                            oneType2.members = filterredList;
+                                            req.unpackaged.types.push(oneType2);
+                                        }
+                                    }
+                                });
+                            }
+                            $scope.showMessage("Creating requests for retrieval.",'INFO');
+                            console.log('creating retrieval request '+(createRequestIndex+1)+'/'+$scope.requestDetailLi.length);
+                            console.log('req123 ', JSON.stringify(req));
+                            addToJSLog('Creating retrieval requests for '+requestDetail.MetaType+'.');
+                            $scope.conn1.metadata.retrieve(req,function(err, result){
+                                if(err)
+                                {
+                                    console.log('Error while creating retrieval request.');
+                                    console.log(err);
+                                    addToJSLog('Error while creating retrieval request.');
+                                    addToJSLog(JSON.stringify(err));
+                                    addToJSLog(String(err));
+                                }
+                                else
+                                {
+                                    if(result != undefined && result.id != undefined)
+                                    {
+                                        console.log('RESULT ASYNC ', result);
+                                        $scope.AsyncIdMap[result.id] = requestDetail;
+                                    }
+                                }
+                                createRequestIndex++;
+                                createRequestOneByOne();
+                            });
+                        }
+                        else
+                        {
+                            angular.forEach($scope.AsyncIdMap, function(value, key) {
+                                $scope.AsyncIdLi.push(key);
+                            });
+                            console.log('Request created.');
+                            console.log('$scope.AsyncIdLi.length--'+$scope.AsyncIdLi.length);
+                            console.log($scope.AsyncIdLi);
+                            console.log($scope.AsyncIdMap);
+                            addToJSLog("Retrieval status check is scheduled after 20 seconds.");
+                            var remainingTime = 20;
+                            var timeCounter = function() {
+                                if(remainingTime > 0)
+                                {
+                                    $scope.showMessage("Retrieval status check is scheduled after "+remainingTime+" seconds.",'INFO');
+                                    remainingTime--;
+                                    setTimeout(timeCounter, 1000);
+                                }
+                                else
+                                {
+                                    setTimeout($scope.checStatusOfRetrievalRequest,0);
+                                }
+                            }
+                            $scope.updateJSLog().then(function success() {
+                                timeCounter();
+                            });                 
+                        }
+                    }
+                    createRequestOneByOne();
+                }
+            };
+            
+            $scope.checStatusOfRetrievalRequest = function() {
+                if($scope.AsyncIdIndex < $scope.AsyncIdLi.length)
+                {
+                    console.log('Checking retrieval status--'+($scope.AsyncIdIndex+1)+'/'+$scope.AsyncIdLi.length);
+                    var currentAsyncId = $scope.AsyncIdLi[$scope.AsyncIdIndex];
+                    console.log('$scope.AsyncIdLi', $scope.AsyncIdLi);
+                    console.log('currentAsyncId', currentAsyncId);
+                    var requestDetail = $scope.AsyncIdMap[currentAsyncId];
+                    console.log('requestDetail ', JSON.stringify(requestDetail));
+                    var currentMetaType = requestDetail.MetaType;
+                    $scope.showMessage('Retrieving '+currentMetaType+'.','INFO');
+                    addToJSLog('Retrieving '+currentMetaType+'.');
+                    $scope.conn1.metadata.checkRetrieveStatus(currentAsyncId,function(err,result){
+                        if(err) 
+                        {
+                            console.log('Error while checking retrieval request.');
+                            console.log(err);
+                            addToJSLog("No response received from server.");
+                            addToJSLog(JSON.stringify(err));
+                            addToJSLog(String(err));
+                            
+                            $scope.BreakeAsyncLi.push(currentAsyncId);
+                            $scope.continueCheckNextRequest();
+                        }
+                        else
+                        {
+                            if(result != undefined && result.id != undefined)
+                            {
+                                if(result.done == 'true')
+                                {
+                                    if(result.success == 'true' && result.zipFile != undefined)
+                                    {
+                                        console.log('result', result);
+                                        console.log('result', JSON.stringify(result));
+                                        var skipTheseTypes = {};
+                                        skipTheseTypes['Translations'] = 'Translations';
+                                        skipTheseTypes['CustomObjectTranslation'] = 'CustomObjectTranslation';
+                                        skipTheseTypes['Profile'] = 'Profile';
+                                        if(result.messages != undefined && skipTheseTypes[currentMetaType] == undefined){
+                                            var retrievalMessages = [];
+                                            if(Array.isArray(result.messages)){
+                                                retrievalMessages = result.messages;
+                                            }
+                                            else{
+                                                retrievalMessages.push(result.messages);
+                                            }
+                                            $.each(retrievalMessages, function( tempIndex, rMsg) {
+                                                if(rMsg != undefined && rMsg.problem != undefined && rMsg.problem != ''){
+                                                    addToJSLog('Problem:- '+rMsg.problem);
+                                                }
+                                            });
+                                        }
+                                        addToJSLog("Saving "+currentMetaType+'.');
+                                        $scope.readAndCreateMetadataItem(result.zipFile,requestDetail);
+                                    }
+                                    else
+                                    {
+                                        console.log('Retrieval Request failed on Server.');
+                                        console.log(result);
+                                        console.log(result.errorMessage);
+                                        addToJSLog("Retrieval Request failed on Server.");
+                                        addToJSLog(result.errorMessage);
+                                        $scope.BreakeAsyncLi.push(result.id);
+                                        $scope.continueCheckNextRequest();
+                                    }
+                                }
+                                else
+                                {
+                                    console.log('Request is in progress on server.');
+                                    $scope.RemainingLi.push(result.id);
+                                    $scope.continueCheckNextRequest();
+                                }
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    if($scope.RemainingLi.length > 0)
+                    {
+                        $scope.AsyncIdLi = [];
+                        angular.forEach($scope.RemainingLi, function(value, key) {
+                            $scope.AsyncIdLi.push(value);
+                        });
+                        $scope.AsyncIdIndex = 0;
+                        $scope.RemainingLi = [];
+                        addToJSLog("Retrieval status check is scheduled after 20 seconds.");
+                        var remainingTime = 20;
+                        var timeCounter = function(){
+                            if(remainingTime > 0)
+                            {
+                                $scope.showMessage("Retrieval status check is scheduled after "+remainingTime+" seconds.",'INFO');
+                                remainingTime--;
+                                setTimeout(timeCounter, 1000);
+                            }
+                            else
+                            {
+                                setTimeout($scope.checStatusOfRetrievalRequest,0);
+                            }
+                        }
+                        $scope.updateJSLog().then(function success() {
+                            timeCounter();
+                        });
+                    }
+                    else if($scope.BreakeAsyncLi.length > 0)
+                    {
+                        $scope.requestDetailLi = [];
+                        angular.forEach($scope.BreakeAsyncLi, function(currentAsyncId, key) {
+                            var requestDetail = $scope.AsyncIdMap[currentAsyncId];
+                            var currentMetaType = requestDetail.MetaType;
+                            addToJSLog('Breaking retrieval requests for '+currentMetaType+'.');
+                            if(requestDetail.Items != undefined && requestDetail.Items.length > 1)
+                            {
+                                var dynamicLimit;
+                                if(requestDetail.Items.length > 5)
+                                    dynamicLimit = Math.floor(requestDetail.Items.length *.50);
+                                else
+                                    dynamicLimit = 1;   
+                                var localItemNames = [];
+                                var localItems = [];
+                                for(var loopIndex=0; loopIndex < requestDetail.Items.length; loopIndex++)
+                                {
+                                    var localIm = requestDetail.Items[loopIndex];
+                                    if(loopIndex % dynamicLimit == 0 && localItemNames.length > 0)
+                                    {
+                                        var breakedAsyncDetail = {};
+                                        breakedAsyncDetail.IsFirst = false;
+                                        breakedAsyncDetail.MetaType = currentMetaType;
+                                        breakedAsyncDetail.ItemNames = localItemNames;
+                                        breakedAsyncDetail.Items = localItems;
+                                        console.log('Previous--'+requestDetail.ItemNames.length+'---Should--'+dynamicLimit+'--Exact--'+breakedAsyncDetail.ItemNames.length);
+                                        $scope.requestDetailLi.push(breakedAsyncDetail);
+                                        localItemNames = [];
+                                        localItems = [];
+                                    }
+                                    localItems.push(localIm);
+                                    localItemNames.push(localIm.fullName);
+                                }
+                                if(localItemNames.length > 0)
+                                {
+                                    var breakedAsyncDetail = {};
+                                    breakedAsyncDetail.IsFirst = false;
+                                    breakedAsyncDetail.MetaType = currentMetaType;
+                                    breakedAsyncDetail.ItemNames = localItemNames;
+                                    breakedAsyncDetail.Items = localItems;
+                                    console.log('Previous--'+requestDetail.ItemNames.length+'---Should--'+dynamicLimit+'--Exact--'+breakedAsyncDetail.ItemNames.length);
+                                    $scope.requestDetailLi.push(breakedAsyncDetail);
+                                }
+                            }
+                            else
+                            {
+                                for(var loopIndex=0; loopIndex < requestDetail.Items.length; loopIndex++)
+                                {
+                                    var localIm = requestDetail.Items[loopIndex];
+                                    console.log("Unable to retrieve "+currentMetaType+" "+localIm.fullName+".");
+                                }
+                            }
+                        });
+                        if($scope.requestDetailLi.length > 0)
+                        {
+                            $scope.processRequestForRetrieval();
+                        }
+                        else
+                        {
+                            var filterDetail = {};
+                            filterDetail.IsRetrieveStandard = $scope.IsRetrieveStandard;
+                            filterDetail.IsOnlyActiveOmnistudioComponents = $scope.IsOnlyActiveOmnistudioComponents;
+                            filterDetail.filterList = $scope.mainFilterList;
+                            var filterInfoJSON = JSON.stringify(filterDetail);
+                            
+                            addToJSLog('JS retrieval completed.');
+                            $scope.updateJSLog().then(function success() {
+                                redirectToSnapshot($scope.snapshotId,false, JSON.stringify($scope.metadataTypesNeedRetrievalByBatchLi), filterInfoJSON, $scope.filterDays, $scope.selectedDayOption);
+                            });
+                        }
+                    }
+                    else
+                    {
+                        var filterDetail = {};
+                        filterDetail.IsRetrieveStandard = $scope.IsRetrieveStandard;
+                        filterDetail.IsOnlyActiveOmnistudioComponents = $scope.IsOnlyActiveOmnistudioComponents;
+                        filterDetail.filterList = $scope.mainFilterList;
+                        var filterInfoJSON = JSON.stringify(filterDetail);
+
+                        addToJSLog('JS retrieval completed.');
+                        $scope.updateJSLog().then(function success() {
+                            redirectToSnapshot($scope.snapshotId,false, JSON.stringify($scope.metadataTypesNeedRetrievalByBatchLi), filterInfoJSON, $scope.filterDays, $scope.selectedDayOption);
+                        });
+                    }
+                }
+            };
+            
+            $scope.continueCheckNextRequest = function() {
+                $scope.AsyncIdIndex++;
+                setTimeout($scope.checStatusOfRetrievalRequest, 0);
+            };
+
+            $scope.readAndCreateMetadataItem = function(zipStr,requestDetail) {
+                if(zipStr != undefined) {
+                    console.log('read Items-'+new Date());
+                    var fileZipWriter;
+                    var currentMetaType = requestDetail.MetaType;
+                    var readZipFiles = function() {
+                        //var zip = new JSNewZip();
+                        //zip.loadAsync(zipStr, {base64: true}).then(function (zip) {
+                        zip.createReader(new zip.Data64URIReader(zipStr), function(reader) {
+                            reader.getEntries(function(entries) {
+                                if(entries.length) {
+                                    //call stack depth fix
+                                    var fileEntryMap = {};
+                                    let innerCompsMap = {};
+                                    $.each(entries, function( EntryIndex, singleEntry) {
+                                        let fileName = singleEntry.filename;
+                                        if(singleEntry != undefined 
+                                            && fileName != undefined 
+                                            && singleEntry.directory == false
+                                            && (   
+                                                currentMetaType == 'Profile' && fileName.indexOf("profiles/") == 0 || 
+                                                currentMetaType == 'PermissionSet' && fileName.indexOf("permissionsets/") == 0 ||
+                                                currentMetaType == 'CustomObjectTranslation' && fileName.indexOf("objectTranslations/") == 0 ||
+                                                currentMetaType == 'Translations' && fileName.indexOf("translations/") == 0 ||
+                                                (currentMetaType != 'Profile' && currentMetaType != 'PermissionSet' && currentMetaType != 'CustomObjectTranslation' && currentMetaType != 'Translations')
+                                            )
+                                        ) {
+                                            fileEntryMap[fileName] = singleEntry;
+                                        }
+                                    });
+                                    var metaItemIndex = 0;
+                                    var createChunksOneByOne = function() {
+                                        if(metaItemIndex < requestDetail.Items.length) {
+                                            var metaComp = requestDetail.Items[metaItemIndex];
+                                            var compFiles = [];
+                                            if(fileEntryMap[metaComp.fileName] != undefined) {
+
+                                                compFiles.push(fileEntryMap[metaComp.fileName]);
+                                                if(fileEntryMap[metaComp.fileName+"-meta.xml"] != undefined) {
+                                                    compFiles.push(fileEntryMap[metaComp.fileName+"-meta.xml"]);
+                                                }
+                                            }
+                                            else if(bundleTypes[currentMetaType] != undefined) {    
+                                                for(var mapKey in fileEntryMap) {
+                                                    if(mapKey != undefined && mapKey.indexOf(metaComp.fileName+'/') == 0 ) {
+                                                        compFiles.push(fileEntryMap[mapKey]);
+                                                    }
+                                                }
+                                                if(currentMetaType == 'ExperienceBundle' && fileEntryMap[metaComp.fileName+".site-meta.xml"] != undefined) {
+                                                    compFiles.push(fileEntryMap[metaComp.fileName+".site-meta.xml"]);
+                                                }
+                                            }
+                                            else {
+                                                console.log('Component not found-'+metaComp.type+'-'+metaComp.fullName+'-'+metaComp.fileName);
+                                            }
+                                            //create singleZip
+                                            if(compFiles.length > 0) {
+                                                let ziptoInsert;
+                                                let addFileIndex = 0;
+                                                var addFilesOneByOne = function() {
+                                                    if(addFileIndex < compFiles.length) {
+                                                        var singleEntry = compFiles[addFileIndex];
+                                                        var fileName = singleEntry.filename;
+                                                        if($scope.innerCompTypes[currentMetaType] == true) {
+                                                            if(innerCompsMap[currentMetaType+'#'+metaComp.fullName] != undefined) {
+                                                                let TextContent = innerCompsMap[currentMetaType+'#'+metaComp.fullName];
+                                                                ziptoInsert.add(fileName, new zip.TextReader(TextContent), function() {
+                                                                    addFileIndex++;
+                                                                    addFilesOneByOne();
+                                                                });
+                                                            }
+                                                            else {
+                                                                singleEntry.getData(new zip.TextWriter(), function(TextContent) {
+                                                                    innerCompsMap = $scope.createMapOfRequiredItmes(currentMetaType,TextContent,fileName,requestDetail.Items,innerCompsMap);
+                                                                    TextContent = innerCompsMap[currentMetaType+'#'+metaComp.fullName];
+                                                                    if(TextContent != undefined) {
+                                                                        ziptoInsert.add(fileName, new zip.TextReader(TextContent), function() {
+                                                                            addFileIndex++;
+                                                                            addFilesOneByOne();
+                                                                        });
+                                                                    }
+                                                                    else {
+                                                                        addFileIndex++;
+                                                                        addFilesOneByOne();
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                        else {
+                                                            singleEntry.getData(new zip.BlobWriter(), function(blobData) {
+                                                                ziptoInsert.add(fileName, new zip.BlobReader(blobData), function() {
+                                                                    addFileIndex++;
+                                                                    addFilesOneByOne();
+                                                                });
+                                                            });
+                                                        }
+                                                    }
+                                                    else {
+                                                        ziptoInsert.close(function (base64Data) {
+                                                            if(base64Data != undefined && base64Data.length < 5900000) {
+                                                                base64Data = base64Data.slice(base64Data.indexOf(';base64,') + 8);
+                                                                metaComp.base64 = base64Data;
+                                                            } else {
+                                                                addToJSLog('Unable to retrieve the component is greater than 6MB-'+metaComp.type+'-'+metaComp.fullName+'.');
+                                                                console.log('Unable to retrieve the component is greater than 6MB-'+metaComp.type+'-'+metaComp.fullName+'.');
+                                                            }
+                                                            metaItemIndex++;
+                                                            createChunksOneByOne();
+                                                        });
+                                                    }
+                                                }
+                                                
+                                                function createZipWriter() {
+                                                    zip.createWriter(new zip.Data64URIWriter(), function(writer2) {
+                                                        ziptoInsert = writer2;
+                                                        addFilesOneByOne();
+                                                    }, function(error) {
+                                                        // onerror callback
+                                                        console.log('Error while creating zip files.');
+                                                        console.log(error);
+                                                        console.log(JSON.stringify(error));
+                                                        $scope.showMessage(JSON.stringify(error));
+                                                    });
+                                                }
+                                                createZipWriter();
+                                            }
+                                            else {
+                                                addToJSLog('Component not found in zip-'+metaComp.type+'-'+metaComp.fullName+'.');
+                                                metaItemIndex++;
+                                                createChunksOneByOne();
+                                            }
+                                        }
+                                        else {
+                                            let attachmentSizeLimit = 5900000;
+                                            let attachmentListLimit = 200;
+                                            let limitInsertList = [];
+                                            let limitChunk = [];
+                                            let limitAttList = [];
+                                            let limitSize = 0;
+                                            $.each(requestDetail.Items, function( meIndex, mItem) {
+                                                if(mItem.base64 != undefined) {
+                                                    if((limitChunk.length > 0 && (limitSize + mItem.base64.length) > attachmentSizeLimit)
+                                                        || limitChunk.length >= attachmentListLimit 
+                                                    ) {
+                                                        let detail = {};
+                                                        detail.attList = limitAttList;
+                                                        detail.itemList = limitChunk;
+                                                        limitInsertList.push(detail);
+                                                        limitSize = 0;
+                                                        limitChunk = [];
+                                                        limitAttList = [];
+                                                    }
+
+                                                    var att = {};
+                                                    att.Name = currentMetaType;
+                                                    att.ContentType = 'application/zip';
+                                                    att.Description = currentMetaType;
+                                                    att.ParentId = $scope.snapshotId;
+                                                    att.Body = mItem.base64;
+                                                    limitAttList.push(att);
+                                                    limitChunk.push(mItem);
+
+                                                    limitSize += mItem.base64.length;
+                                                }
+                                            });
+                                            if(limitChunk.length > 0) {
+                                                let detail = {};
+                                                detail.attList = limitAttList;
+                                                detail.itemList = limitChunk;
+                                                limitInsertList.push(detail);
+                                                limitSize = 0;
+                                                limitChunk = [];
+                                                limitAttList = [];
+                                            }
+                                            let cIndex = 0;
+                                            var createAttachmentsAndItems = function() {
+                                                console.log('createAttachmentsAndItems');
+                                                if(cIndex < limitInsertList.length) {
+                                                    let detail = limitInsertList[cIndex];
+                                                    var selfConn = new jsforce.Connection({ accessToken: '{!$Api.Session_Id}' });
+                                                    selfConn.sobject("Attachment").create(detail.attList, function(err, resList) {
+                                                        if(err) {
+                                                            $scope.showMessage(err.errorCode,'ERROR');
+                                                        }
+                                                        else {
+                                                            var metaItemDetailLi = [];
+                                                            angular.forEach(resList, function(rets, attIndex) {
+                                                                let tempMeta = detail.itemList[attIndex];
+                                                                if(rets.success) {
+                                                                    tempMeta.snapId = $scope.snapshotId;
+                                                                    tempMeta.attId = rets.id;
+
+                                                                    delete tempMeta['checked'];
+                                                                    delete tempMeta['createdById'];
+                                                                    delete tempMeta['createdByName'];
+                                                                    delete tempMeta['createdDate'];
+                                                                    delete tempMeta['base64'];
+                                                                    delete tempMeta['lastModifiedById'];
+                                                                    delete tempMeta['manageableState'];
+                                                                    delete tempMeta['namespacePrefix'];
+                                                                    delete tempMeta['postfix'];
+                                                                    // exclude duplicates (ticket/1648)
+                                                                    if ($scope.notDuplicate(tempMeta)){
+                                                                        metaItemDetailLi.push(tempMeta);
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    addToJSLog('Insert error-'+tempMeta.type+'-'+tempMeta.fullName+'.');
+                                                                    addToJSLog('Error-'+err.errorCode+'.');
+                                                                }
+                                                            });
+                                                            Visualforce.remoting.Manager.invokeAction(
+                                                                '{!$RemoteAction.CreateMultiMetaSnapshotController.createMetadataItems}',
+                                                                JSON.stringify(metaItemDetailLi),
+                                                                function(r,e) {
+                                                                    if(e.status && r) {
+                                                                        if(r.isSuccess) {
+                                                                            addToJSLog(currentMetaType+' items inserted successfully.');
+                                                                            cIndex++;
+                                                                            createAttachmentsAndItems();
+                                                                        }
+                                                                        else {
+                                                                            $scope.showMessage(r.errorMessage,'ERROR');
+                                                                        }
+                                                                    }
+                                                                    else {
+                                                                        $scope.showMessage(e.message,'ERROR');
+                                                                    }
+                                                                }
+                                                            );
+                                                        }
+                                                    });
+                                                }
+                                                else {
+                                                    console.log('read items end-'+new Date());
+                                                    $scope.continueCheckNextRequest();
+                                                }
+                                            }
+                                            createAttachmentsAndItems();
+                                        }
+                                    }
+                                    createChunksOneByOne();
+                                }
+                                else {
+                                    console.log('after readAndCreateMetadataItem-'+new Date());
+                                    $scope.continueCheckNextRequest();
+                                }
+                            });
+                        }, function(error) {
+                            // onerror callback
+                            console.log('Error in reading zip from server.');
+                            console.log(error);
+                            addToJSLog('Error in reading retrieval zip.');
+                            addToJSLog(JSON.stringify(error));
+                            addToJSLog(String(error));
+                            if(error.message != undefined)
+                                $scope.showMessage(error.message,'ERROR');
+                            else
+                                $scope.showMessage('Unknown error.','ERROR');                               
+                        });
+                    }
+                    
+                    zip.createWriter(new zip.Data64URIWriter(), function(writer2) {
+                        fileZipWriter = writer2;
+                        readZipFiles();
+                    }, function(error) {
+                        // onerror callback
+                        console.log('Error while creating single zip.');
+                        console.log(error);
+                        if(error.message != undefined)
+                            $scope.showMessage(error.message,'ERROR');
+                        else
+                            $scope.showMessage('Unknown error.','ERROR');
+                    });
+                }
+            };
+
+            $scope.createMapOfRequiredItmes = function(metaType,data,fileName,insertTheseItems,innerCompsMap) {
+                let filesMap = {};
+                angular.forEach(insertTheseItems, function(tempMeta, key) {
+                    filesMap[tempMeta.type+'#'+tempMeta.fullName] = tempMeta.type+'#'+tempMeta.fullName;
+                });
+                let fullName = '';
+                if(metaType != 'CustomLabel')
+                {
+                    fullName = fileName.slice(fileName.indexOf("/")+1,fileName.lastIndexOf('.'))+".";
+                }
+                let typeTagNameMap = {
+                    'WorkflowAlert' : 'alerts',
+                    'AssignmentRule' : 'assignmentRule',
+                    'AutoResponseRule' : 'autoResponseRule',
+                    'BusinessProcess' : 'businessProcesses',
+                    'CompactLayout' : 'compactLayouts',
+                    'EscalationRule' : 'escalationRule',
+                    'CustomField' : 'fields',
+                    'FieldSet' : 'fieldSets',
+                    'WorkflowKnowledgePublish' : 'knowledgePublishes',
+                    'WorkflowFieldUpdate' : 'fieldUpdates',
+                    'CustomLabel' : 'labels',
+                    'ListView' : 'listViews',
+                    'ManagedTopic' : 'ManagedTopic',
+                    'MatchingRule' : 'matchingRules',
+                    'WorkflowOutboundMessage' : 'outboundMessages',
+                    'WorkflowRule' : 'rules',
+                    'RecordType' : 'recordTypes',
+                    'SharingCriteriaRule' : 'sharingCriteriaRules',
+                    'SharingGuestRule' : 'sharingGuestRules',
+                    'SharingTerritoryRule' : 'sharingTerritoryRules',
+                    'SharingOwnerRule' : 'sharingOwnerRules',
+                    'SharingReason' : 'sharingReasons',
+                    'WorkflowTask' : 'tasks',
+                    'ValidationRule' : 'validationRules',
+                    'WebLink' : 'webLinks'
+                }
+
+                let typeParantTagNameMap = {
+                    'AssignmentRule' : 'AssignmentRules',
+                    'AutoResponseRule' : 'AutoResponseRules',
+                    'WebLink' : 'CustomObject',
+                    'FieldSet' : 'CustomObject',
+                    'ListView' : 'CustomObject',
+                    'RecordType' : 'CustomObject',
+                    'CustomField' : 'CustomObject',
+                    'CompactLayout' : 'CustomObject',
+                    'SharingReason' : 'CustomObject',
+                    'ValidationRule' : 'CustomObject',
+                    'BusinessProcess' : 'CustomObject',
+                    'CustomLabel' : 'CustomLabels',
+                    'EscalationRule' : 'EscalationRules',
+                    'ManagedTopic' : 'ManagedTopics',
+                    'MatchingRule' : 'MatchingRules',
+                    'SharingOwnerRule' : 'SharingRules',
+                    'SharingCriteriaRule' : 'SharingRules',
+                    'SharingTerritoryRule' : 'SharingRules',
+                    'SharingGuestRule' : 'SharingRules',
+                    'WorkflowRule' : 'Workflow',
+                    'WorkflowTask' : 'Workflow',
+                    'WorkflowAlert' : 'Workflow',
+                    'WorkflowKnowledgePublish' : 'Workflow',
+                    'WorkflowFieldUpdate' : 'Workflow',
+                    'WorkflowOutboundMessage' : 'Workflow'
+                }
+                
+                let x2js = new X2JS({useDoubleQuotes : true, stripWhitespaces : false});
+                let childObj = {};
+                let parentObj = x2js.xml_str2json(data);
+                if(parentObj[typeParantTagNameMap[metaType]] != undefined) {
+                    let childLi = [];
+
+                    let tempObj = parentObj[typeParantTagNameMap[metaType]];
+                    if(tempObj[typeTagNameMap[metaType]] != undefined) {
+                        let childDetails = tempObj[typeTagNameMap[metaType]];
+                        if(Array.isArray(childDetails)) {
+                            for(let index = 0; index < childDetails.length; index++)
+                            {
+                                let childVal = childDetails[index];
+                                if(childVal != undefined && childVal.fullName != undefined)
+                                {
+                                    let fileKey = metaType+'#'+fullName+''+childVal.fullName;
+                                    if(filesMap[fileKey] != undefined) {
+                                        childLi.push(childVal);
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            if(childDetails != undefined && childDetails.fullName != undefined) {
+                                let fileKey = metaType+'#'+fullName+''+childDetails.fullName;
+                                if(filesMap[fileKey] != undefined) {
+                                    childLi.push(childDetails);
+                                }
+                            }
+                        }
+                    }
+
+                    angular.forEach(childLi, function(childDetail, childIndex) {
+                        let childLiObj = {};
+                        childLiObj._xmlns = parentObj[typeParantTagNameMap[metaType]]._xmlns;
+
+                        childLiObj[typeTagNameMap[metaType]] = [childDetail];
+                        childObj[typeParantTagNameMap[metaType]] = childLiObj;
+                        let childXmlBeforeFormat = x2js.json2xml_str(childObj);
+                        if(childXmlBeforeFormat != undefined) {
+                            childXmlBeforeFormat = '<?xml version="1.0" encoding="UTF-8"?>'+childXmlBeforeFormat;
+                            try {
+                                childXmlBeforeFormat = vkbeautify.xml(childXmlBeforeFormat);
+                                innerCompsMap[metaType+'#'+fullName+''+childDetail.fullName] = childXmlBeforeFormat;
+                            }
+                            catch(excep) {
+                                console.log(excep);
+                            }
+                        }
+                    });
+                }
+                return innerCompsMap;
+            };
+            
+            $scope.listComponents = function() {
+                console.log('list components');
+
+                $scope.selectedNameSpaceMap = {};
+                var tempSelect = $("select[id$='multiselectPanel:rightList']");
+                if(tempSelect != undefined && tempSelect != null 
+                    && tempSelect.length > 0 && tempSelect[0] != undefined 
+                    && tempSelect[0].options != undefined && tempSelect[0].options.length > 0){
+                        for(var indexs=0; indexs < tempSelect[0].options.length; indexs++){
+                            $scope.selectedNameSpaceMap[tempSelect[0].options[indexs].value] = tempSelect[0].options[indexs].value;
+                        }
+                }
+                $scope.queryIndex = 0;
+                //$scope.remainingTypesMap = {};
+                $scope.objectNamesLi = [];
+                $scope.conn1 = $scope.createConnection('{!JSENCODE(authDetails.details.AccessToken__c)}','{!JSENCODE(authDetails.details.InstanceURL__c)}');
+                console.log('$scope.selectedTypes',$scope.selectedTypes);
+                console.log('$scope.jsCompTypesRetrievalMap',$scope.jsCompTypesRetrievalMap);
+                $scope.listOrgAllObjects();
+            };
+
+            $scope.listOrgAllObjects = function() {
+                var checkMap = {};
+                $.each($scope.selectedTypes, function( keyIndex, selectedType) {
+                    if(selectedType != undefined){
+                        
+                        checkMap[selectedType] = selectedType;
+                    }
+                });
+                if( checkMap['CustomField'] != undefined
+                    || checkMap['Profile'] != undefined
+                    || checkMap['CustomObjectTranslation'] != undefined
+                    || checkMap['Translations'] != undefined
+                ){
+                    console.log('listOrgAllObjects');
+                    addToJSLog('Listing all CustomObject components of source org.');
+                    $scope.listByAllOptions('CustomObject').then(
+                        function success(resultList) {
+                            var tempLi = [];
+                            $.each(resultList, function( key2, fileProperty) {
+                                if(fileProperty != undefined && fileProperty.fullName != undefined){
+                                    $scope.objectNamesLi.push(fileProperty.fullName);
+                                }
+                            });
+                            $scope.listSimpleMetadataTypeOneByOne();
+
+                        }, function error(reason) {
+                            console.log('Error in related list components-');
+                            console.log(reason);
+                            $scope.showMessage('No response from server.(list '+currentMetadataType+')','ERROR');
+                        }
+                    );
+                }
+                else{
+                    $scope.listSimpleMetadataTypeOneByOne();
+                }
+            };
+            
+            $scope.listSimpleMetadataTypeOneByOne = function() {
+                if($scope.queryIndex < $scope.selectedTypes.length)
+                {
+                    var currentMetadataType = $scope.selectedTypes[$scope.queryIndex];
+                    if($scope.jsCompTypesRetrievalMap[currentMetadataType] != undefined){
+                        console.log('Query----'+currentMetadataType);
+                        $scope.showMessage('Listing changes for '+currentMetadataType+'.','INFO');
+                        addToJSLog('Listing changes for '+currentMetadataType+'.');
+                        $scope.listByAllOptions(currentMetadataType).then(
+                            function success(resultList) {
+                                var tempLi = [];
+                                $.each(resultList, function( key2, fileProperty) {
+                                    if(fileProperty != undefined && fileProperty.fullName != undefined){
+                                        fileProperty.lastModifiedByName = typeof fileProperty.lastModifiedByName === 'object' ? '' : fileProperty.lastModifiedByName;
+                                        if($scope.validateMetadataItem(fileProperty) && $scope.getVisibileState(fileProperty))
+                                        {
+                                            tempLi.push(fileProperty);
+                                        }
+                                    }
+                                });
+                                if(tempLi.length > 0){
+                                    $scope.filteredMetaDataItems[currentMetadataType] = tempLi;
+                                }
+                                console.log('tempLi ', tempLi);
+                                $scope.continueQuery();
+
+                            }, function error(reason) {
+                                addToJSLog('Error:-'+JSON.stringify(reason));
+                                console.log('Error in related list components-');
+                                console.log(reason);
+                                $scope.continueQuery();
+                            }
+                        );
+                    }
+                    else
+                    {
+                        if($scope.folderToTypeMap[currentMetadataType] == undefined)
+                            $scope.metadataTypesNeedRetrievalByBatchLi.push(''+currentMetadataType);
+                        $scope.continueQuery();
+                    }
+                }
+                else
+                {
+                    $scope.listRelatedComponents();
+                }
+            };
+            
+            $scope.continueQuery = function() {
+                $scope.queryIndex++;
+                $scope.listSimpleMetadataTypeOneByOne();
+            };
+
+            $scope.listRelatedComponents = function() {
+                var listRelatedIndex = 0;
+                var relatedTypeList = [];
+                var uniqueRelatedMap = {};
+                //if profile is selected.
+                if($scope.filteredMetaDataItems['Profile'] != undefined){
+                    $.each($scope.packagePermissions, function( mType, nameList) {
+                        if(mType != undefined){
+                            
+                            uniqueRelatedMap[mType] = mType;
+                        }
+                    });
+                }
+                if($scope.filteredMetaDataItems['CustomObjectTranslation'] != undefined){
+                    $.each($scope.objectTranslationTypes, function( mType, nameList) {
+                        if(mType != undefined){
+                            
+                            uniqueRelatedMap[mType] = mType;
+                        }
+                    });
+                }
+                if($scope.filteredMetaDataItems['Translations'] != undefined){
+                    $.each($scope.translationTypes, function( mType, nameList) {
+                        if(mType != undefined){
+                            
+                            uniqueRelatedMap[mType] = mType;
+                        }
+                    });
+                }
+                $.each(uniqueRelatedMap, function( mType, mTypeVal) {
+                    if(mType != undefined){
+                        
+                        relatedTypeList.push(mType);
+                    }
+                });
+                console.log('listRelatedComponents-'+relatedTypeList.length);
+                var listRelatedOneByOne = function(){
+                    if(listRelatedIndex < relatedTypeList.length){
+                        var currentMetadataType = relatedTypeList[listRelatedIndex];
+                        console.log('Related-'+(listRelatedIndex+1)+'/'+relatedTypeList.length+'-'+currentMetadataType);
+                        addToJSLog('Listing '+currentMetadataType+' components.');
+                        $scope.listByAllOptions(currentMetadataType).then(
+                            function success(resultList) {
+                                $.each(resultList, function( key2, fileProperty) {
+                                    if(fileProperty != undefined && fileProperty.fullName != undefined){
+                                        //fill in global variable.
+                                        $scope.fillRelated(currentMetadataType,fileProperty);
+                                    }
+                                });
+                                listRelatedIndex++;
+                                listRelatedOneByOne();
+                            }, function error(reason) {
+                                console.log('Error in related list components-');
+                                console.log(reason);
+                                addToJSLog('Error:-'+JSON.stringify(reason));
+                                $scope.showMessage('No response from server.(list '+currentMetadataType+')','ERROR');
+                                listRelatedIndex++;
+                                listRelatedOneByOne();
+                            }
+                        );
+                    }
+                    else{
+                        //$scope.listCustomFields();
+                        $scope.finishFilterMetaItems();
+                    }
+                }
+                listRelatedOneByOne();
+            };
+
+            $scope.updateJSLog = function(){
+                return $q(function(resolve, reject) {
+                    if($scope.jsAttachmentId != undefined && $scope.jsAttachmentId != ''){
+
+                        var tempText = window.btoa(unescape(encodeURIComponent(JSRetrievalLog)));
+                        var inLi = [];
+                        var att = new sforce.SObject("Attachment");
+                        att.Id = $scope.jsAttachmentId;
+                        att.Body = tempText;
+                        inLi.push(att);
+                
+                        sforce.connection.update(inLi,{
+                            onSuccess : function(result) {
+                                console.log('Log updated.');
+                                resolve();
+                            },
+                            onFailure : function(error) {
+                                console.log('Error in update log');
+                                console.log(error);
+                                resolve();
+                            }
+                        });
+                    }
+                    else{
+                        resolve();
+                    }
+                });
+            }
+            $scope.listByAllOptions = function(currentMetadataType) {
+                var toolingAPIObjectsMap = {};
+                toolingAPIObjectsMap['ApexClass'] = 'SELECT Id,Name,LastModifiedDate,LastModifiedBy.Name,ManageableState,NamespacePrefix FROM ApexClass';
+                toolingAPIObjectsMap['ApexPage'] = 'SELECT Id,Name,LastModifiedDate,LastModifiedBy.Name,ManageableState,NamespacePrefix FROM ApexPage';
+                toolingAPIObjectsMap['CustomLabel'] = 'SELECT Id, Name, LastModifiedDate, LastModifiedBy.Name, ManageableState, NamespacePrefix FROM CustomLabel';
+                var soqlObjectMap = {};
+                soqlObjectMap['EmailFolder'] = 'SELECT Id, ParentId, DeveloperName, Type, NamespacePrefix, LastModifiedDate, LastModifiedBy.Name FROM Folder WHERE (Type =\'Email\' OR Type=\'EmailTemplate\') AND DeveloperName != null';
+                soqlObjectMap['ReportFolder'] = 'SELECT Id, Name, ParentId, DeveloperName, Type, NamespacePrefix, LastModifiedDate, LastModifiedBy.Name FROM Folder WHERE Type =\'Report\' AND DeveloperName != null';
+                soqlObjectMap['DocumentFolder'] = 'SELECT Id, Name, ParentId, DeveloperName, Type, NamespacePrefix, LastModifiedDate, LastModifiedBy.Name FROM Folder WHERE Type =\'Document\' AND DeveloperName != null';
+                soqlObjectMap['DashboardFolder'] = 'SELECT Id, Name, ParentId, DeveloperName, Type, NamespacePrefix, LastModifiedDate, LastModifiedBy.Name FROM Folder WHERE Type =\'Dashboard\' AND DeveloperName != null';
+                soqlObjectMap['EmailTemplate'] = 'SELECT Id, DeveloperName, NamespacePrefix, FolderId, Folder.DeveloperName, FolderName, LastModifiedDate, LastModifiedBy.Name FROM EmailTemplate';
+                soqlObjectMap['Report'] = 'SELECT Id, DeveloperName, NamespacePrefix, LastModifiedDate, LastModifiedBy.Name, FolderName, OwnerId FROM Report WHERE FolderName!=\'Private Reports\'';
+                soqlObjectMap['Document'] = 'SELECT Id, DeveloperName, NamespacePrefix, FolderId, LastModifiedDate, LastModifiedBy.Name, Type FROM Document';
+                soqlObjectMap['Dashboard'] = 'SELECT Id, DeveloperName, NamespacePrefix, FolderId, LastModifiedDate, LastModifiedBy.Name FROM Dashboard';
+                soqlObjectMap['PermissionSet'] = 'SELECT Id, Name, Label, NamespacePrefix, LastModifiedDate, LastModifiedBy.Name FROM PermissionSet WHERE ProfileId=null';
+                
+                var childAPIObjectsMap = {};
+                childAPIObjectsMap['CustomField'] = 'CustomObject';
+                var childListAtOneTime = 3;
+
+                var default_folderMap = {};
+                default_folderMap['Document'] = 'DocumentFolder';
+                default_folderMap['Dashboard'] = 'DashboardFolder';
+                default_folderMap['Report'] = 'ReportFolder';
+                default_folderMap['EmailTemplate'] = 'EmailFolder';
+
+                var postFixMap = {
+                    //'Document' : '',
+                    'DocumentFolder' : '-meta.xml',
+                    'EmailTemplate' : '.email',
+                    'EmailFolder' : '-meta.xml',
+                    'EmailTemplateFolder' : '-meta.xml',
+                    'Report' : '.report',
+                    'ReportFolder' : '-meta.xml',
+                    'Dashboard' : '.dashboard',
+                    'DashboardFolder' : '-meta.xml',
+                    'PermissionSet' : '.permissionset'
+                };
+
+                var preFixMap = {
+                    'Document' : 'documents/',
+                    'DocumentFolder' : 'documents/',
+                    'EmailTemplate' : 'email/',
+                    'EmailFolder' : 'email/',
+                    'EmailTemplateFolder' : 'email/',
+                    'Report' : 'reports/',
+                    'ReportFolder' : 'reports/',
+                    'Dashboard' : 'dashboards/',
+                    'DashboardFolder' : 'dashboards/',
+                    'PermissionSet' : 'permissionsets/'
+                };
+
+                return $q(function(resolve, reject) {
+                    if(default_folderMap[currentMetadataType] != undefined) {
+                        let folderType = default_folderMap[currentMetadataType];
+                        $scope.listByApexSOQLAPI(folderType, soqlObjectMap, preFixMap, postFixMap).then(
+                            function success(folderList) {
+                                let resultList = [];
+                                let folderIdNameMap = {};
+                                $.each(folderList, function( key2, fileProperty) {
+                                    folderIdNameMap[fileProperty.id] = fileProperty.fullName;
+                                    resultList.push(fileProperty);
+                                });
+                                $scope.listByApexSOQLAPI(currentMetadataType, soqlObjectMap, preFixMap, postFixMap).then(
+                                    function success(subList) {
+                                        $.each(subList, function( key2, fileProperty) {
+                                            if(fileProperty.folderId != undefined && folderIdNameMap[fileProperty.folderId] != undefined) {
+                                                fileProperty.fullName = folderIdNameMap[fileProperty.folderId]+'/'+fileProperty.fullName;
+                                                if(fileProperty.type == 'Document') {
+                                                    fileProperty.fileName = preFixMap[fileProperty.type]+fileProperty.fullName;
+                                                }
+                                                else {
+                                                    fileProperty.fileName = preFixMap[fileProperty.type]+fileProperty.fullName+fileProperty.postfix;
+                                                }
+                                                resultList.push(fileProperty);
+                                            }
+                                            else if(fileProperty.folderName != undefined) {
+                                                fileProperty.fullName = fileProperty.folderName+'/'+fileProperty.fullName;
+                                                fileProperty.fileName = preFixMap[fileProperty.type]+fileProperty.fullName+fileProperty.postfix;
+                                                if(fileProperty.type == 'Document') {
+                                                    fileProperty.fileName = preFixMap[fileProperty.type]+fileProperty.fullName;
+                                                }
+                                                else {
+                                                    fileProperty.fileName = preFixMap[fileProperty.type]+fileProperty.fullName+fileProperty.postfix;
+                                                }
+                                                resultList.push(fileProperty);
+                                            }
+                                        });
+                                        resolve(resultList);
+                                    }, function error(reason) {
+                                        reject(reason);
+                                });
+                            }, function error(reason) {
+                                reject(reason);
+                        });
+                    }
+                    else {
+                        $scope.listByJSMetadataAPI(currentMetadataType).then(
+                            function success(resultList) {
+                                resolve(resultList);
+                            }, function error(err1) {
+                                $scope.listByApexMetadataAPI(currentMetadataType).then(
+                                    function success(resultList) {
+                                        resolve(resultList);
+                                    }, function error(err2) {
+                                        if(childAPIObjectsMap[currentMetadataType] != undefined) {
+                                            function finalTry(folderNamesLi, childListAtOneTime) {
+                                                $scope.listByApexInChunksByMetadataAPI(currentMetadataType, folderNamesLi, childListAtOneTime).then(
+                                                    function success(resultList) {
+                                                        resolve(resultList);
+                                                    }, function error(reason) {
+                                                        reject(reason);
+                                                });
+                                            }
+                                            if($scope.objectNamesLi != undefined && $scope.objectNamesLi.length > 0) {
+                                                finalTry($scope.objectNamesLi, 3);
+                                            }
+                                            else {
+                                                $scope.listByAllOptions('CustomObject').then(
+                                                    function success(resultList) {
+                                                        var tempLi = [];
+                                                        $.each(resultList, function( key2, fileProperty) {
+                                                            if(fileProperty != undefined && fileProperty.fullName != undefined){
+                                                                $scope.objectNamesLi.push(fileProperty.fullName);
+                                                            }
+                                                        });
+                                                        finalTry($scope.objectNamesLi, 3);
+                                                    }, function error(err3) {
+                                                        reject(err3);
+                                                });
+                                            }
+                                        } else if(toolingAPIObjectsMap[currentMetadataType] != undefined) {
+                                            $scope.listByApexToolingAPI(currentMetadataType, toolingAPIObjectsMap).then(
+                                                function success(resultList) {
+                                                    resolve(resultList);
+                                                }, function error(err3) {
+                                                    reject(err3);
+                                            });
+                                        } else if(soqlObjectMap[currentMetadataType] != undefined) {
+                                            $scope.listByApexSOQLAPI(currentMetadataType, soqlObjectMap, preFixMap, postFixMap).then(
+                                                function success(resultList) {
+                                                    resolve(resultList);
+                                                }, function error(err3) {
+                                                    reject(err3);
+                                            });
+                                        }
+                                        else {
+                                            reject(err2);
+                                        }
+                                });
+                        });
+                    }
+                });
+            }
+
+            $scope.listByJSMetadataAPI = function(currentMetadataType) {
+                console.log('listByJSMetadataAPI');
+                return $q(function(resolve, reject) {
+                    let resultList = [];
+                    let uniqueList = [];
+                    let uniqueMap = {};
+                    let queryLi = [];
+                    let query = new Object();
+                    query.folder = '';
+                    query.type = currentMetadataType;
+                    queryLi.push(query);
+                    $scope.conn1.metadata.list(queryLi, ''+$scope.apiVersion, function(err, result){
+                        if(err)
+                        {
+                            reject(err);
+                        }
+                        else
+                        {
+                            console.log('Got response by JS:-');
+                            if(Array.isArray(result)){
+                                resultList = result;
+                            }
+                            else{
+                                resultList.push(result);
+                            }
+                            if(currentMetadataType == 'RecordType'){
+                                Visualforce.remoting.Manager.invokeAction(
+                                    '{!$RemoteAction.CreateMultiMetaSnapshotController.listPersonAccountRecordTypes}',
+                                    $scope.orgDetailId,
+                                    function(result2,err2) {
+                                        let personAccountMap = {};
+                                        if(err2.status)
+                                        {
+                                            $.each(result2, function( key2, rtProperty) {
+                                                if(rtProperty != undefined && rtProperty.fullName != undefined){
+                                                    personAccountMap[rtProperty.id] = rtProperty;
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            console.log('Error in PersonAccount record types list:');
+                                            console.log(err2.message);
+                                        }
+                                        $.each(resultList, function( key2, fileProperty) {
+                                            if(fileProperty != undefined && fileProperty.fullName != undefined){
+
+                                                if(personAccountMap[fileProperty.id] != undefined){
+                                                    fileProperty.fullName = personAccountMap[fileProperty.id].fullName;
+                                                    fileProperty.fileName = personAccountMap[fileProperty.id].fileName;
+                                                }
+                                                fileProperty = fixNamesOfItems(fileProperty);
+                                                if(fileProperty.lastModifiedDate != undefined && fileProperty.lastModifiedDate != ''){
+                                                    try{
+                                                        fileProperty.lastModifiedDate = new Date(fileProperty.lastModifiedDate).getTime();
+                                                    }
+                                                    catch(ex){
+                                                        console.log(ex);
+                                                    }
+                                                }
+                                                if(uniqueMap[fileProperty.fullName] == undefined){
+                                                    uniqueMap[fileProperty.fullName] = fileProperty.fullName;
+                                                    uniqueList.push(fileProperty);
+                                                }
+                                            }
+                                        });
+                                        resolve(uniqueList);
+                                });
+                            }
+                            else{
+                                $.each(resultList, function( key2, fileProperty) {
+                                    if(fileProperty != undefined && fileProperty.fullName != undefined) {
+
+                                        fileProperty = fixNamesOfItems(fileProperty);
+                                        if(fileProperty.lastModifiedDate != undefined && fileProperty.lastModifiedDate != '') {
+                                            try{
+                                                fileProperty.lastModifiedDate = new Date(fileProperty.lastModifiedDate).getTime();
+                                            }
+                                            catch(ex){
+                                                console.log(ex);
+                                            }
+                                        }
+                                        if(uniqueMap[fileProperty.fullName] == undefined){
+                                            uniqueMap[fileProperty.fullName] = fileProperty.fullName;
+                                            uniqueList.push(fileProperty);
+                                        }
+                                    }
+                                });
+                                resolve(uniqueList);
+                            }
+                        }
+                    });
+                });
+            };
+
+            $scope.listByApexMetadataAPI  = function(currentMetadataType) {
+                console.log('listByApexMetadataAPI');
+                return $q(function(resolve, reject) {
+                    let resultList = [];
+                    let uniqueList = [];
+                    let uniqueMap = {};
+                    let query2Li = [];
+                    let query2 = new Object();
+                    query2.metaFolder = '';
+                    query2.metaType = currentMetadataType;
+                    query2Li.push(query2);
+
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.CreateMultiMetaSnapshotController.listMetadataComponents}',
+                        JSON.stringify(query2Li),
+                        $scope.orgDetailId,
+                        function(vfResult,vfError) {
+                            if(vfError.status) {
+                                console.log('Got response by Apex:-');
+                                if(Array.isArray(vfResult)){
+                                    resultList = vfResult;
+                                }
+                                else{
+                                    resultList.push(vfResult);
+                                }
+                                $.each(resultList, function( key2, fileProperty) {
+                                    if(fileProperty != undefined && fileProperty.fullName != undefined){
+                                        if(uniqueMap[fileProperty.fullName] == undefined){
+                                            uniqueMap[fileProperty.fullName] = fileProperty.fullName;
+                                            uniqueList.push(fileProperty);
+                                        }
+                                    }
+                                });
+                                resolve(uniqueList);
+                            }
+                            else {
+                                console.log('Response not found by Metadata API and not supported by other API:-');
+                                reject(vfError);
+                            }
+                    });
+                });
+            };
+
+            $scope.listByApexToolingAPI = function(currentMetadataType, toolingAPIObjectsMap) {
+                console.log('listByApexToolingAPI');
+                return $q(function(resolve, reject) {
+                    let resultList = [];
+                    let uniqueList = [];
+                    let uniqueMap = {};
+                    //if(toolingAPIObjectsMap[currentMetadataType] != undefined)
+                    //SOQL by tooling API.
+                    var squery = toolingAPIObjectsMap[currentMetadataType];
+                    var nextRecordsUrl = '';
+
+                    function getByToolingAPI(){
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.CreateMultiMetaSnapshotController.getByToolingAPI}',
+                            currentMetadataType,
+                            squery,
+                            $scope.orgDetailId,
+                            nextRecordsUrl,
+                            function(result2,err2) {
+                                if(err2.status)
+                                {
+                                    try{
+                                        console.log('Got response by tooling API:-');
+                                        var toolingResultList = [];
+                                        var tempBlob = b64toBlob(result2, 'application/json');
+                                        tempBlob.text().then(function success(jsnResult){
+                                            var toolingResult = JSON.parse(jsnResult);
+                                            if(toolingResult != undefined && toolingResult.records != undefined){
+                                                if(Array.isArray(toolingResult.records)){
+                                                    toolingResultList = toolingResult.records;
+                                                }
+                                                else{
+                                                    toolingResultList.push(toolingResult.records);
+                                                }
+                                            }
+                                            $.each(toolingResultList, function( key2, toolingItem) {
+                                                if(toolingItem != undefined && toolingItem.Name != undefined){
+                                                    var fileProperty = {};
+                                                    fileProperty.id = toolingItem.Id;
+                                                    if(toolingItem.ManageableState != undefined){
+                                                        fileProperty.manageableState = toolingItem.ManageableState;
+                                                    }
+                                                    if(toolingItem.NamespacePrefix != undefined){
+                                                        fileProperty.namespacePrefix = toolingItem.NamespacePrefix;
+                                                    }
+                                                    var prefix = '';
+                                                    var postfix = '';
+                                                    if(currentMetadataType == 'ApexClass'){
+                                                        prefix = 'classes/';
+                                                        postfix = '.cls';
+                                                    }
+                                                    else if(currentMetadataType == 'ApexPage'){
+                                                        prefix = 'pages/';
+                                                        postfix = '.page';
+                                                    }
+                                                    else if(currentMetadataType == 'CustomLabel'){
+                                                        prefix = 'labels/CustomLabels';
+                                                        postfix = '.labels';
+                                                    }
+                                                    if(currentMetadataType == 'User' && toolingItem.Username != undefined){
+                                                        fileProperty.fullName = toolingItem.Username;
+                                                        fileProperty.fileName = toolingItem.Username;
+                                                    }
+                                                    else if(fileProperty.manageableState == 'installed' 
+                                                        && fileProperty.namespacePrefix != undefined
+                                                        && fileProperty.namespacePrefix != ''){
+
+                                                        fileProperty.fullName = fileProperty.namespacePrefix+'__'+toolingItem.Name;
+                                                        fileProperty.fileName = currentMetadataType == 'CustomLabel' ? 'labels/CustomLabels.labels' : prefix+''+fileProperty.fullName+''+postfix;                                                                      
+                                                    }
+                                                    else{
+                                                        fileProperty.fullName = toolingItem.Name;
+                                                        fileProperty.fileName = currentMetadataType == 'CustomLabel' ? 'labels/CustomLabels.labels' : prefix+''+fileProperty.fullName+''+postfix;
+                                                    }
+                                                    
+                                                    if(toolingItem.LastModifiedBy != undefined && toolingItem.LastModifiedBy.Name != undefined){
+                                                        fileProperty.lastModifiedByName = toolingItem.LastModifiedBy.Name;
+                                                    }
+                                                    else{
+                                                        fileProperty.lastModifiedByName = '';
+                                                    }
+                                                    if(toolingItem.LastModifiedDate != undefined && toolingItem.LastModifiedDate != ''){
+                                                        try{
+                                                            fileProperty.lastModifiedDate = new Date(toolingItem.LastModifiedDate).getTime();
+                                                        }
+                                                        catch(ex){
+                                                            console.log(ex);
+                                                        }
+                                                    }
+                                                    fileProperty.type = currentMetadataType;
+                                                    if(uniqueMap[fileProperty.fullName] == undefined){
+                                                        uniqueMap[fileProperty.fullName] = fileProperty.fullName;
+                                                        uniqueList.push(fileProperty);
+                                                    }
+                                                }
+                                            });
+                                            if(toolingResult != undefined && toolingResult.nextRecordsUrl != undefined && toolingResult.nextRecordsUrl != ''){
+                                                nextRecordsUrl = toolingResult.nextRecordsUrl;
+                                                console.log('again request for next records.');
+                                                getByToolingAPI();
+                                            }
+                                            else{
+                                                resolve(uniqueList);
+                                            }
+                                        });
+                                    }
+                                    catch(ex){
+                                        reject(ex);
+                                    }
+                                }
+                                else{
+                                    console.log('Response not found by Tooling API:-');
+                                    reject(err2);
+                                }
+                        });
+                    }
+                    getByToolingAPI();
+                });
+            };
+
+            $scope.listByApexInChunksByMetadataAPI = function(currentMetadataType, folderNamesLi, childListAtOneTime) {
+                console.log('listByApexInChunksByMetadataAPI');
+                return $q(function(resolve, reject) {
+                    let resultList = [];
+                    let uniqueList = [];
+                    let uniqueMap = {};
+                    var customFolderIndex = 0;
+                    var queryFolderOneByOne = function() {
+                        if(customFolderIndex < folderNamesLi.length) {
+                            console.log(currentMetadataType+'-'+(customFolderIndex+1)+'/'+folderNamesLi.length);
+                            let query2Li = [];
+                            let tempIndex = customFolderIndex;
+                            for(; (tempIndex < folderNamesLi.length && tempIndex < (customFolderIndex+childListAtOneTime));  tempIndex++) {
+                                
+                                let folder = folderNamesLi[tempIndex];
+                                let query2 = {};
+                                query2.metaFolder = folder;
+                                query2.metaType = currentMetadataType;
+                                query2Li.push(query2);
+                            }
+
+                            Visualforce.remoting.Manager.invokeAction(
+                                '{!$RemoteAction.CreateMultiMetaSnapshotController.listMetadataComponents}',
+                                JSON.stringify(query2Li),
+                                $scope.orgDetailId,
+                                function(res3,err3) {
+                                    if(err3.status) {
+                                        let customFieldsLi = [];
+                                        for(let itemIndex = 0; itemIndex < res3.length; itemIndex++) {
+                                            let meta = res3[itemIndex];
+                                            if(meta != undefined && meta.fullName != undefined) {
+                                                if(uniqueMap[meta.fullName] == undefined) {
+                                                    uniqueMap[meta.fullName] = meta.fullName;
+                                                    uniqueList.push(meta);
+                                                }
+                                            }
+                                        }
+                                        customFolderIndex = tempIndex;
+                                        queryFolderOneByOne();
+                                    }
+                                    else {
+                                        reject(err3);
+                                    }
+                                }
+                            );
+                        }
+                        else {
+                            console.log('Got response by listByApexInChunksByMetadataAPI:-');
+                            resolve(uniqueList);
+                        }
+                    }
+                    queryFolderOneByOne();
+                });
+            };
+
+            $scope.listByApexSOQLAPI = function(currentMetadataType, soqlObjectMap, preFixMap, postFixMap) {
+                console.log('listByApexSOQLAPI');
+                return $q(function(resolve, reject) {
+                    let resultList = [];
+                    let uniqueList = [];
+                    let uniqueMap = {};
+                    if(soqlObjectMap[currentMetadataType] != undefined){
+                        //SOQL by API.
+                        var squery = soqlObjectMap[currentMetadataType];
+                        var nextRecordsUrl = '';
+                        let childParentIdMap = {};
+                        let idNameMap = {};
+
+                        function getBySOQLAPI() {
+                            Visualforce.remoting.Manager.invokeAction(
+                                '{!$RemoteAction.CreateMultiMetaSnapshotController.getBySOQLAPI}',
+                                currentMetadataType,
+                                squery,
+                                $scope.orgDetailId,
+                                nextRecordsUrl,
+                                function(result2,err2) {
+                                    if(err2.status)
+                                    {
+                                        try{
+                                            var toolingResultList = [];
+                                            var tempBlob = b64toBlob(result2, 'application/json');
+                                            tempBlob.text().then(function success(jsnResult){
+                                                var toolingResult = JSON.parse(jsnResult);
+                                                if(toolingResult != undefined && toolingResult.records != undefined){
+                                                    if(Array.isArray(toolingResult.records)){
+                                                        toolingResultList = toolingResult.records;
+                                                    }
+                                                    else{
+                                                        toolingResultList.push(toolingResult.records);
+                                                    }
+                                                }
+                                                $.each(toolingResultList, function( key2, toolingItem) {
+                                                    if(toolingItem != undefined && toolingItem.Id != undefined){
+                                                        var fileProperty = {};
+                                                        fileProperty.id = toolingItem.Id;
+                                                        fileProperty.type = currentMetadataType;
+                                                        if(currentMetadataType == 'EmailFolder' && toolingItem.Type == 'EmailTemplate') {
+                                                            fileProperty.type = 'EmailTemplateFolder';
+                                                        }
+                                                        if(toolingItem.FolderId != undefined) {
+                                                            fileProperty.folderId = toolingItem.FolderId;
+                                                        }
+                                                        else if((currentMetadataType == 'Report' && toolingItem.FolderName == 'Public Reports')) {
+                                                            fileProperty.folderName = 'unfiled$public';
+                                                        }
+                                                        else if(currentMetadataType == 'Report' && toolingItem.OwnerId != undefined) {
+                                                            fileProperty.folderId = toolingItem.OwnerId;
+                                                        }
+                                                        if(currentMetadataType == 'EmailTemplate' 
+                                                            && toolingItem.Folder == null
+                                                            && (toolingItem.FolderName == 'Unfiled Public Classic Email Templates'
+                                                                || toolingItem.FolderName == 'Public Email Templates'
+                                                            )) {
+                                                            fileProperty.folderName = 'unfiled$public';
+                                                            fileProperty.folderId = undefined;
+                                                        }
+                                                        if(toolingItem.ManageableState != undefined) {
+                                                            fileProperty.manageableState = toolingItem.ManageableState;
+                                                        }
+                                                        if(toolingItem.NamespacePrefix != undefined) {
+                                                            fileProperty.namespacePrefix = toolingItem.NamespacePrefix;
+                                                            if(toolingItem.ManageableState == undefined) {
+                                                                fileProperty.manageableState = 'installed';
+                                                            }
+                                                        }
+                                                        var prefix = preFixMap[currentMetadataType];
+                                                        var postfix = postFixMap[currentMetadataType];
+                                                        if(currentMetadataType == 'Document' && toolingItem.Type != undefined) {
+                                                            postfix = '.'+toolingItem.Type;
+                                                        }
+                                                        fileProperty.postfix = postfix;
+                                                        if(fileProperty.manageableState == 'installed' 
+                                                            && fileProperty.namespacePrefix != undefined
+                                                            && fileProperty.namespacePrefix != '') {
+
+                                                            fileProperty.fullName = fileProperty.namespacePrefix+'__'+(toolingItem.DeveloperName != undefined ? toolingItem.DeveloperName : toolingItem.Name);
+                                                            fileProperty.fileName = currentMetadataType == 'CustomLabel' ? 'labels/CustomLabels.labels' : prefix+''+fileProperty.fullName+''+postfix;                                                                      
+                                                        }
+                                                        else {
+                                                            fileProperty.fullName = toolingItem.DeveloperName != undefined ? toolingItem.DeveloperName : toolingItem.Name;
+                                                            fileProperty.fileName = currentMetadataType == 'CustomLabel' ? 'labels/CustomLabels.labels' : prefix+''+fileProperty.fullName+''+postfix;
+                                                        }
+                                                        if(currentMetadataType == 'Document' && postfix != undefined) {
+                                                            fileProperty.fullName = fileProperty.fullName+''+postfix;
+                                                        }
+                                                        
+                                                        if(toolingItem.LastModifiedBy != undefined && toolingItem.LastModifiedBy.Name != undefined) {
+                                                            fileProperty.lastModifiedByName = toolingItem.LastModifiedBy.Name;
+                                                        }
+                                                        else {
+                                                            fileProperty.lastModifiedByName = '';
+                                                        }
+                                                        if(toolingItem.LastModifiedDate != undefined && toolingItem.LastModifiedDate != '') {
+                                                            try {
+                                                                fileProperty.lastModifiedDate = new Date(toolingItem.LastModifiedDate).getTime();
+                                                            }
+                                                            catch(ex) {
+                                                                console.log(ex);
+                                                            }
+                                                        }
+                                                        if(toolingItem.DeveloperName != undefined) {
+                                                            if(toolingItem.ParentId != undefined) {
+                                                                fileProperty.folderId = toolingItem.ParentId;
+                                                                childParentIdMap[toolingItem.Id] = toolingItem.ParentId;
+                                                                //childNameParentIdMap[toolingItem.DeveloperName] = toolingItem.ParentId;
+                                                            }
+                                                            idNameMap[toolingItem.Id] = toolingItem.DeveloperName;
+                                                        }
+                                                        if(uniqueMap[fileProperty.fullName] == undefined && toolingItem.PermissionSetGroupId == undefined) {
+                                                            uniqueMap[fileProperty.fullName] = fileProperty.fullName;
+                                                            uniqueList.push(fileProperty);
+                                                        }
+                                                    }
+                                                });
+                                                if(toolingResult != undefined && toolingResult.nextRecordsUrl != undefined && toolingResult.nextRecordsUrl != '') {
+                                                    nextRecordsUrl = toolingResult.nextRecordsUrl;
+                                                    console.log('again request for next records.');
+                                                    getBySOQLAPI();
+                                                }
+                                                else {
+                                                    console.log('Got response by SOQL API');
+                                                    if(soqlObjectMap[currentMetadataType] != undefined) {
+                                                        $.each(uniqueList, function( key2, fileProperty) {
+                                                            if(childParentIdMap[fileProperty.id] != undefined) {
+                                                                let parrentStructure = '';
+                                                                let childId = ''+fileProperty.id;
+                                                                while(childParentIdMap[childId] != undefined) {
+                                                                    
+                                                                    let parentId = childParentIdMap[childId];
+                                                                    if(idNameMap[parentId] != undefined) {
+                                                                        let parentName = idNameMap[parentId];
+                                                                        if(parentName.indexOf('__') > -1) {
+                                                                            parentName = parentName.substring(parentName.indexOf('__')+2, parentName.length());
+                                                                        }
+                                                                        parrentStructure = parentName+'/'+parrentStructure ;
+                                                                        childId = ''+parentId;
+                                                                    }
+                                                                    else {
+                                                                        childId = 'break';
+                                                                    }
+                                                                }
+                                                                if(parrentStructure != '' ) {
+                                                                    let subFolderFullName = parrentStructure+''+fileProperty.fullName;
+                                                                    if(subFolderFullName.length < 230) {
+                                                                        fileProperty.fullName = subFolderFullName;
+                                                                        fileProperty.fileName = preFixMap[fileProperty.type]+subFolderFullName+postFixMap[fileProperty.type];
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                    resolve(uniqueList);
+                                                }
+                                            });
+                                        }
+                                        catch(ex) {
+                                            reject(ex);
+                                        }
+                                    }
+                                    else {
+                                        console.log('Response not found by SOQL API:-');
+                                        reject(err2);
+                                    }
+                            });
+                        }
+                        getBySOQLAPI();
+                    }
+                    else {
+                        console.log('Not supported by rest API:-'+currentMetadataType);
+                        reject(new Error('Not supported by rest API:-'+currentMetadataType));
+                    }
+                });
+            };
+
+            $scope.fillRelated = function(mType, fileProperty){
+                
+
+                if(fileProperty.manageableState == 'installed' && fileProperty.namespacePrefix != undefined && fileProperty.namespacePrefix != ''){
+                    if($scope.selectedNameSpaceMap[fileProperty.namespacePrefix] != undefined){
+                        if($scope.packagePermissions[mType] != undefined){
+                            $scope.packagePermissions[mType].push(fileProperty.fullName);
+                        }
+                        if($scope.translationTypes[mType] != undefined){
+                            $scope.translationTypes[mType].push(fileProperty.fullName);
+                        }
+                        if($scope.objectTranslationTypes[mType] != undefined){
+                            $scope.objectTranslationTypes[mType].push(fileProperty.fullName);
+                        }
+                    }
+                }
+                else{
+                    if($scope.packagePermissions[mType] != undefined){
+                        $scope.packagePermissions[mType].push(fileProperty.fullName);
+                    }
+                    if($scope.translationTypes[mType] != undefined){
+                        $scope.translationTypes[mType].push(fileProperty.fullName);
+                    }
+                    if($scope.objectTranslationTypes[mType] != undefined){
+                        $scope.objectTranslationTypes[mType].push(fileProperty.fullName);
+                    }
+                }
+            }
+            /****************************Filter Methods****************************/
+                      
+            $scope.addRowToSearch = function(){
+                if($scope.filterList.length < 9)
+                {
+                    var filterRow = {};
+                    filterRow.field = '';
+                    filterRow.operator = '';
+                    filterRow.value = '';
+                    $scope.filterList.push(filterRow);
+                }
+            }
+
+            $scope.applySearch = function(){
+                $scope.mainFilterList = [];
+                for(var index=0; index < $scope.filterList.length; index++)
+                {
+                    var filterRow = $scope.filterList[index];
+                    $scope.mainFilterList.push(JSON.parse(JSON.stringify(filterRow)));
+                }
+            }
+            
+            $scope.defaultFilterJSON = '{!JSENCODE(defaultFilterJSON)}';
+            //recreate filter fill
+            if($scope.defaultFilterJSON != undefined && $scope.defaultFilterJSON != '') {
+                try {
+                    $scope.filterList = [];
+                    $scope.filterDays = {!lastModifiedInDays};
+                    console.log($scope.defaultFilterJSON);
+                    var defaultFilterOBJ = JSON.parse($scope.defaultFilterJSON);
+                    if(defaultFilterOBJ != undefined && defaultFilterOBJ.snapShotFilter != undefined && defaultFilterOBJ.snapShotFilter.IsRetrieveStandard != undefined){
+                        $scope.IsRetrieveStandard = defaultFilterOBJ.snapShotFilter.IsRetrieveStandard;
+                    }
+                    if(defaultFilterOBJ != undefined && defaultFilterOBJ.snapShotFilter != undefined && defaultFilterOBJ.snapShotFilter.IsOnlyActiveOmnistudioComponents != undefined){
+                        $scope.IsOnlyActiveOmnistudioComponents = defaultFilterOBJ.snapShotFilter.IsOnlyActiveOmnistudioComponents;
+                    }
+                    if(defaultFilterOBJ != undefined && defaultFilterOBJ.snapShotFilter != undefined && defaultFilterOBJ.snapShotFilter.filterList != undefined){
+                        $scope.filterList = defaultFilterOBJ.snapShotFilter.filterList;
+                    }
+                    if(defaultFilterOBJ != undefined && defaultFilterOBJ.noOfHours != undefined){
+                        $scope.selectedDayOption = defaultFilterOBJ.noOfHours;
+                    }
+                    console.log(defaultFilterOBJ);
+                }
+                catch(err) {
+                    console.log(err);
+                }
+            }
+            else{
+                $scope.addRowToSearch();
+                $scope.addRowToSearch();
+                $scope.addRowToSearch();
+                $scope.addRowToSearch();
+                $scope.addRowToSearch();
+            }
+            $scope.applySearch();
+            
+            $scope.createLookupLink = function(fieldName,filterIndex,fieldValue){
+                var link = '{!customLookupPageName}fieldName='+fieldName+'&filterIndex='+filterIndex+'&fieldValue='+fieldValue;
+                console.log(link);
+                window.open(link, 'MsgWindow', 'width=600,height=600,resizable=1,scrollbars=1');
+            };
+            
+            $scope.setFilterRow = function(filterIndex,fieldType,selectedItems){
+                if(filterIndex < $scope.filterList.length)
+                {
+                    var filterRow = $scope.filterList[filterIndex];
+                    var tempStr = '';
+                    angular.forEach(selectedItems, function(str) {
+                        if(tempStr == '')
+                            tempStr += str;
+                        else
+                            tempStr += ','+str;
+                    });
+                    $scope.$apply(function() {
+                        filterRow.value = tempStr;
+                    });
+                }
+            };
+            /**********************************************************************/
+            /****************************Utility Methods*****************************/
+            $scope.addDaysInCurrentTime = function(theDate, days) {
+                return theDate.getTime() + days*24*60*60*1000;
+            };
+            
+            $scope.defaultFilterType = function() {
+                $scope.selectedTypes = [];
+                $scope.allTypeUniqueMap = {};
+                var localFilterList = [];
+                var tempFilterList = $scope.filterList;
+                for(var index=0; index < tempFilterList.length; index++)
+                {
+                    var filterRow = tempFilterList[index];
+                    if(filterRow != undefined && filterRow.field == 'type' && filterRow.value != undefined && filterRow.value != '' && filterRow.operator != undefined && filterRow.operator != '')
+                    {
+                        localFilterList.push(filterRow);
+                    }
+                }
+                var angMetaTypeLi = $scope.metaTypeLi;
+                for(var index=0; index < angMetaTypeLi.length; index++)
+                {
+                    var metaType = angMetaTypeLi[index];
+                    if(metaType != undefined && metaType != '' )
+                    {
+                        if($scope.enableFilterLogic)
+                        {
+                            var IsSingleTypeFilter = false;
+                            var compoentTypesSelectedInFilterLi = [];
+                            for(var index2=0; index2 < localFilterList.length; index2++)
+                            {
+                                var filterRow = localFilterList[index2];
+                                var filterVal = filterRow.value.toLowerCase();
+                                var metadataTypeValue = metaType.toLowerCase();
+                                if(filterRow.field == 'type' && filterRow.operator == 'equals')
+                                {
+                                    IsSingleTypeFilter = true;
+                                    var allMetadataTypes = filterVal.split(',');
+                                    for(var tempFilterIndex in allMetadataTypes)
+                                    {
+                                        if(tempFilterIndex < allMetadataTypes.length && metadataTypeValue == allMetadataTypes[tempFilterIndex])
+                                        {
+                                            compoentTypesSelectedInFilterLi.push(metaType);
+                                        }
+                                    }
+                                }
+                            }
+                            if(IsSingleTypeFilter)
+                            {
+                                if(compoentTypesSelectedInFilterLi.length > 0)
+                                {
+                                    addSelectedType(metaType);
+                                }
+                            }
+                            else
+                            {
+                                addSelectedType(metaType);
+                            }
+                        }
+                        else
+                        {
+                            var finalResult = true;
+                            for(var index2=0; index2 < localFilterList.length; index2++)
+                            {
+                                var filterRow = localFilterList[index2];
+                                var filterVal = filterRow.value.toLowerCase();
+                                if(filterVal == 'all' && filterRow.operator == 'equals')
+                                {}
+                                else
+                                {
+                                    finalResult = $scope.checkValidCondition(metaType.toLowerCase(),filterVal,filterRow.operator,'type');
+                                    if(!finalResult)
+                                        break;
+                                }
+                            }
+                            if(finalResult)
+                            {
+                                addSelectedType(metaType);
+                            }
+                        }
+                    }
+                }
+                function addSelectedType(mType){
+                     $scope.selectedTypes.push(mType);
+                     $scope.allTypeUniqueMap[mType] = mType;
+                }
+            };
+            
+            $scope.filterSnapshotItems = function(){
+                $scope.applySearch();
+                $scope.visibleStateConditionStr = '';
+                if($scope.enableFilterLogic)
+                {
+                    $scope.visibleStateConditionStr = $scope.filterCondition;
+                }
+                else
+                {
+                    for(var index=0; index < $scope.mainFilterList.length; index++)
+                    {
+                        var filterRow = $scope.mainFilterList[index];
+                        if(filterRow != undefined && filterRow.value != undefined && filterRow.value != '' && filterRow.operator != undefined && filterRow.operator != '')
+                        {
+                            if($scope.visibleStateConditionStr == '')
+                                $scope.visibleStateConditionStr += (index+1)+' ';
+                            else
+                                $scope.visibleStateConditionStr += 'AND '+(index+1)+' ';
+                        }
+                    }
+                }
+                console.log($scope.visibleStateConditionStr);
+            };
+            
+            $scope.validateMetadataItem = function(meta) {
+                if(meta.fullName != undefined && meta.type != undefined 
+                    && meta.fileName != undefined && meta.lastModifiedDate != undefined)
+                {
+                    if(meta.manageableState == 'installed' && meta.namespacePrefix != undefined && meta.namespacePrefix != ''){
+                        if($scope.manageMetadataTypeToRetrieveMap[meta.type] == undefined){
+                            return false;
+                        }
+                        else if($scope.selectedNameSpaceMap[meta.namespacePrefix] == undefined){
+                            return false;
+                        }
+                    }
+                    var metaLastModifiedDate = parseInt(meta.lastModifiedDate);
+                    if((($scope.filterDays == 0 && $scope.selectedDayOption == 'None') || metaLastModifiedDate > $scope.filterTime || (meta.lastModifiedDate == 0 && $scope.IsRetrieveStandard)))
+                        return true;
+                }
+                return false;
+            };
+            
+            $scope.getVisibileState = function(meta) {
+                if($scope.visibleStateConditionStr != undefined && $scope.visibleStateConditionStr != null && $scope.visibleStateConditionStr != '' && $scope.mainFilterList != undefined && $scope.mainFilterList != null && $scope.mainFilterList.length > 0)
+                {
+                    var tempConditionStr = $scope.visibleStateConditionStr.toLowerCase();
+                    tempConditionStr = tempConditionStr.replace(/and/g,'&&');
+                    tempConditionStr = tempConditionStr.replace(/or/g,'||');
+                    try
+                    {
+                        for(var index=0; index < $scope.mainFilterList.length; index++)
+                        {
+                            var filterRow = $scope.mainFilterList[index];
+                            if(filterRow != undefined && filterRow.value != undefined && filterRow.value != '' && filterRow.operator != undefined && filterRow.operator != '')
+                            {
+                                var fieldValue = meta[filterRow.field];
+                                var filterVal = filterRow.value;
+                                var filterOperator = filterRow.operator;
+                                var fieldName = filterRow.field;
+                                
+                                if(fieldValue != undefined && filterVal != undefined)
+                                {
+                                    fieldValue = fieldValue.toLowerCase();
+                                    filterVal = filterVal.toLowerCase();
+                                    fieldValue = fieldValue.trim();
+                                    fieldValue = fieldValue.trim();
+                                    var findStr = ''+(index+1);
+                                    if(tempConditionStr.indexOf(findStr) > -1)
+                                    {
+                                        var dynamicFilterRegex = new RegExp(findStr, 'g');
+                                        tempConditionStr = tempConditionStr.replace(dynamicFilterRegex, ''+$scope.checkValidCondition(fieldValue,filterVal,filterOperator,filterRow.field));
+                                    }
+                                }
+                            }
+                        }
+                        var returnVal = eval(tempConditionStr);
+                        return returnVal;
+                    }
+                    catch(err)
+                    {
+                        console.log(err);
+                    }
+                    return false;
+                }
+                return true;
+            };
+            
+            $scope.checkValidCondition = function(fieldValue,filterVal,filterOperator,fieldName) {
+                if(filterOperator == 'equals')
+                {
+                    if(fieldName == 'fullName' || fieldName == 'type' || fieldName == 'lastModifiedByName' || fieldName == 'createdByName')
+                    {
+                        var typeLi = filterVal.split(',');
+                        for(var index = 0; index < typeLi.length; index++)
+                        {
+                            if(fieldValue == typeLi[index])
+                                return true;
+                        }
+                    }
+                    else
+                    {
+                        if(fieldValue == filterVal)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else if(filterOperator == 'not equals')
+                {
+                    if(fieldName == 'fullName' || fieldName == 'type' || fieldName == 'lastModifiedByName' || fieldName == 'createdByName')
+                    {
+                        var finalResult = true;
+                        var typeLi = filterVal.split(',');
+                        for(var index = 0; index < typeLi.length; index++)
+                        {
+                            if(fieldValue == typeLi[index])
+                            {
+                                finalResult = false;
+                                break;
+                            }
+                        }
+                        return finalResult;
+                    }
+                    else
+                    {
+                        if(fieldValue != filterVal)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else if(filterOperator == 'contains' && fieldValue != undefined && fieldValue != null)
+                {
+                    if(fieldName == 'fullName' || fieldName == 'type')
+                    {
+                        var typeLi = filterVal.split(',');
+                        for(var index = 0; index < typeLi.length; index++)
+                        {
+                            if(fieldValue.indexOf(typeLi[index]) > -1)
+                                return true;
+                        }
+                    }
+                    else
+                    {
+                        if(fieldValue.indexOf(filterVal) > -1)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else if(filterOperator == 'starts with' && fieldValue != undefined && fieldValue != null)
+                {
+                    if(fieldName == 'fullName' || fieldName == 'type')
+                    {
+                        var typeLi = filterVal.split(',');
+                        for(var index = 0; index < typeLi.length; index++)
+                        {
+                            if(fieldValue.indexOf(typeLi[index]) == 0)
+                                return true;
+                        }
+                    }
+                    else
+                    {
+                        if((fieldValue.indexOf(filterVal) == 0))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else if(filterOperator == 'does not contain' && fieldValue != undefined && fieldValue != null)
+                {
+                    if(fieldName == 'fullName' || fieldName == 'type')
+                    {
+                        var finalResult = true;
+                        var typeLi = filterVal.split(',');
+                        for(var index = 0; index < typeLi.length; index++)
+                        {
+                            if(fieldValue.indexOf(typeLi[index])  > -1)
+                            {
+                                finalResult = false;
+                                break;
+                            }
+                        }
+                        return finalResult;
+                    }
+                    else
+                    {
+                        if(fieldValue.indexOf(filterVal) < 0)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            };
+            
+            $scope.showMessage = function(Message_Str,Message_Type) {
+                var parentVal = $("[id$='msg']");
+                if(parentVal != undefined)
+                {
+                    parentVal.html('');
+                    if(Message_Str != '')
+                    {
+                        if(Message_Type == 'ERROR')
+                        {
+                            var childVal = '<span id="j_id0:msg:j_id19:j_id20:0:j_id21">'+
+                                            '<div class="message errorM3 slds-notify slds-notify--alert slds-theme--error customMessage" role="alert">'+
+                                                '<table border="0" cellpadding="0" cellspacing="0" class="messageTable" style="padding:0px;margin:0px;">'+
+                                                    '<tbody>'+
+                                                        '<tr valign="top">'+
+                                                            /*'<td><img alt="ERROR" class="msgIcon" src="/s.gif" title="ERROR"></td>'+*/
+                                                            '<td class="messageCell">'+
+                                                                '<div id="j_id0:msg:j_id19:j_id20:0:j_id21:j_id22:j_id24" class="messageText">'+
+                                                                    '<span id="j_id0:msg:j_id19:j_id20:0:j_id21:j_id22:j_id25" style="color:#cc0000">'+
+                                                                        '<h4>Error:</h4>'+
+                                                                    '</span>'+Message_Str+'<br>'+
+                                                                '</div>'+
+                                                            '</td>'+
+                                                        '</tr>'+
+                                                        '<tr>'+
+                                                            '<td></td>'+
+                                                            '<td></td>'+
+                                                        '</tr>'+
+                                                    '</tbody>'+
+                                                '</table>'+
+                                            '</div>'+
+                                        '</span>';
+                            parentVal.append(childVal);
+                            $scope.disableUi = false;
+
+                            addToJSLog('Error:-'+Message_Str);
+                            $scope.updateJSLog().then(function success() {});
+                        }
+                        else if(Message_Type == 'INFO')
+                        {
+                            var childVal = '<span id="j_id0:msg:j_id19:j_id20:0:j_id21">'+
+                                                '<div class="message infoM3 slds-notify slds-notify--toast customMessage" role="alert">'+
+                                                    '<table border="0" cellpadding="0" cellspacing="0" class="messageTable" style="padding:0px;margin:0px;">'+
+                                                        '<tbody>'+
+                                                            '<tr valign="top">'+
+                                                                /*'<td><img alt="INFO" class="msgIcon" src="/s.gif" title="INFO"></td>'+*/
+                                                                '<td class="messageCell">'+
+                                                                    '<div id="j_id0:msg:j_id19:j_id20:0:j_id21:j_id22:j_id24" class="messageText">'+
+                                                                        '<span id="j_id0:msg:j_id19:j_id20:0:j_id21:j_id22:j_id25">'+
+                                                                            '<h4></h4>'+
+                                                                        '</span>'+Message_Str+'<br>'+
+                                                                    '</div>'+
+                                                                '</td>'+
+                                                            '</tr>'+
+                                                            '<tr>'+
+                                                                '<td></td>'+
+                                                                '<td></td>'+
+                                                            '</tr>'+
+                                                        '</tbody>'+
+                                                    '</table>'+
+                                                '</div>'+
+                                            '</span>';
+                            parentVal.append(childVal);
+                        }
+                    }
+                }
+            };
+            
+            $scope.getRetrieveRequest = function() {
+                var retrieveRequest = new Object();
+                retrieveRequest.apiVersion = $scope.apiVersion;
+                retrieveRequest.singlePackage = true;
+                retrieveRequest.unpackaged = {};
+                retrieveRequest.unpackaged.types = [];
+                return retrieveRequest;
+            };
+            
+            $scope.createConnection = function(accessToken,instanceUrl) {
+                var conn =  new jsforce.Connection({
+                  accessToken : accessToken,
+                  proxyUrl: "/services/proxy",
+                  version: $scope.apiVersion,
+                  serverUrl: instanceUrl
+                });
+                conn.metadata.pollTimeout = 120000;
+                conn.metadata.pollInterval = 300000;
+                return conn;
+            };
+            /**********************************************************************/
+            $scope.notDuplicate = function(item) {
+
+                if (item == undefined) return false;
+                var key = item.fileName + '#' + item.type + '#'+ item.fullName;
+                if ($scope.allComponentsMap[key] == undefined){
+                    $scope.allComponentsMap[key] = true;
+                    return true;
+                }
+                return false;
+            }
+        }]);
+
+        function fixNamesOfItems(fileProperty)
+        {
+            //Modifications in fullName and fileName according to errors we get from salesforce
+            if(fileProperty.type == 'Layout' && fileProperty.manageableState == 'installed' && fileProperty.namespacePrefix != undefined)
+            {
+                fileProperty.fullName = fileProperty.fullName.replace('-','-'+fileProperty.namespacePrefix+'__');
+                fileProperty.fileName = fileProperty.fileName.replace('-','-'+fileProperty.namespacePrefix+'__');
+            }
+            if(fileProperty.type == 'CustomMetadata' && fileProperty.manageableState == 'installed' && fileProperty.namespacePrefix != undefined)
+            {
+                fileProperty.fullName = fileProperty.fullName.replace('.','.'+fileProperty.namespacePrefix+'__');
+                fileProperty.fileName = 'customMetadata/'+fileProperty.fullName+'.md';
+            }
+            if(fileProperty.type == 'QuickAction' && fileProperty.manageableState == 'installed' && fileProperty.namespacePrefix != undefined && fileProperty.fullName.indexOf('.') > -1)
+            {
+                var fullName = fileProperty.fullName;
+                var fileName = fileProperty.fileName;
+                fileProperty.fullName = fullName.substring(0, fullName.indexOf('.')) + '.'+fileProperty.namespacePrefix+'__' + fullName.substring((fullName.indexOf('.')+1),fullName.length);
+                fileProperty.fileName = fileName.substring(0, fileName.indexOf('.')) + '.'+fileProperty.namespacePrefix+'__' + fileName.substring((fileName.indexOf('.')+1),fileName.length);
+            }
+            else if(fileProperty.type == 'QuickAction' && fileProperty.manageableState == 'installed' && fileProperty.namespacePrefix != undefined && fileProperty.fullName.indexOf('.') == -1)
+            {
+                fileProperty.fullName = fileProperty.namespacePrefix+'__' + fileProperty.fullName;
+                fileProperty.fileName = 'quickActions/'+fileProperty.fullName+'.quickAction';
+            }
+            else if(fileProperty.type == 'ManagedTopics')
+            {
+                if(fileProperty.fileName.indexOf('ManagedTopics/') == 0)
+                    fileProperty.fileName = fileProperty.fileName.replace('ManagedTopics/','managedTopics/');
+                fileProperty.fileName = decodeURIComponent(fileProperty.fileName);
+            }
+            else if(fileProperty.type == 'Workflow' && fileProperty.fileName.indexOf('Workflow/') == 0)
+            {
+                fileProperty.fileName = fileProperty.fileName.replace('Workflow/','workflows/');
+            }
+            else if(fileProperty.type == 'MatchingRules' && fileProperty.fileName.indexOf('MatchingRules/') == 0)
+            {
+                fileProperty.fileName = fileProperty.fileName.replace('MatchingRules/','matchingRules/');
+            }
+            else if(fileProperty.type == 'SynonymDictionary' && fileProperty.fullname == '_Default')
+            {
+                fileProperty.fileName = 'synonymDictionaries/_Default.synonymDictionary';
+            }
+            else if(fileProperty.type == 'DigitalExperience' || fileProperty.type == 'DigitalExperienceBundle')
+            {
+                fileProperty.fileName = 'digitalExperiences/' + fileProperty.fullName.replace('.sfdc_', '/sfdc_');
+            }
+            return fileProperty;
+        }
+        
+        function setDefaultMessageOnPage(msg)
+        {
+            var parentVal = $("[id$='defaultMsg']");
+            if(parentVal != undefined)
+            {
+                parentVal.html('');
+                var childVal = '<span id="j_id0:msg:j_id19:j_id20:0:j_id21">'+
+                                    '<div class="message infoM3 slds-notify slds-notify--toast customMessage" role="alert">'+
+                                        '<table border="0" cellpadding="0" cellspacing="0" class="messageTable" style="padding:0px;margin:0px;">'+
+                                            '<tbody>'+
+                                                '<tr valign="top">'+
+                                                    /*'<td><img alt="INFO" class="msgIcon" src="/s.gif" title="INFO"></td>'+*/
+                                                    '<td class="messageCell">'+
+                                                        '<div id="j_id0:msg:j_id19:j_id20:0:j_id21:j_id22:j_id24" class="messageText">'+
+                                                            '<span id="j_id0:msg:j_id19:j_id20:0:j_id21:j_id22:j_id25">'+
+                                                                '<h4></h4>'+
+                                                            '</span>'+msg+'<br>'+
+                                                        '</div>'+
+                                                    '</td>'+
+                                                '</tr>'+
+                                                '<tr>'+
+                                                    '<td></td>'+
+                                                    '<td></td>'+
+                                                '</tr>'+
+                                            '</tbody>'+
+                                        '</table>'+
+                                    '</div>'+
+                                '</span>';
+                parentVal.append(childVal);             
+            }
+        }
+        
+        function setFilterFromLookup(filterIndex,fieldType,selectedItems)
+        {
+            console.log(filterIndex);
+            console.log(fieldType);
+            console.log(selectedItems);
+            //angular.element('#angularControllerId').scope().setFilterRow(filterIndex,fieldType,selectedItems);
+            var filterId = '#jstextboxval'+filterIndex;
+            var tempFilterRow = $(filterId);
+            console.log(tempFilterRow);
+            if(tempFilterRow != undefined)
+            {
+                var tempStr = '';
+                if(selectedItems != undefined)
+                {
+                    for(var index in selectedItems)
+                    {
+                        if(index < selectedItems.length)
+                        {
+                            if(tempStr == '')
+                                tempStr += selectedItems[index];
+                            else
+                                tempStr += ','+selectedItems[index];
+                        }
+                    }
+                }
+                tempFilterRow.val(tempStr);
+                tempFilterRow.trigger("change");
+            }
+        }
+
+        function b64toBlob(b64Data, contentType, sliceSize) {
+            contentType = contentType || '';
+            sliceSize = sliceSize || 512;
+
+            var byteCharacters = atob(b64Data);
+            var byteArrays = [];
+
+            for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+                var byteNumbers = new Array(slice.length);
+                for (var i = 0; i < slice.length; i++) {
+                    byteNumbers[i] = slice.charCodeAt(i);
+                }
+
+                var byteArray = new Uint8Array(byteNumbers);
+
+                byteArrays.push(byteArray);
+            }
+
+            var blob = new Blob(byteArrays, {
+                type: contentType
+            });
+            return blob;
+        }
+        
+        $(document).ready(function(){
+           overridePageMessages();    
+        });
+        
+        function overridePageMessages(){    
+            var textureEffect = '';
+            //Uncomment below line for texture effect on page messages
+            textureEffect = 'slds-theme--alert-texture';        
+            $('.warningM3').addClass('slds-notify slds-notify--toast slds-theme--warning customMessage '+textureEffect);          
+            $('.confirmM3').addClass('slds-notify slds-notify--alert slds-theme--success  customMessage '+textureEffect);    
+            $('.errorM3').addClass('slds-notify slds-notify--alert slds-theme--error customMessage '+textureEffect);                  
+            $('.infoM3').addClass('slds-notify slds-notify--toast customMessage '+textureEffect);    
+                          
+            $('.errorM3').removeClass('errorM3'); 
+            $('.confirmM3').removeClass('confirmM3'); 
+            $('.infoM3').removeClass('infoM3');   
+            $('.warningM3').removeClass('warningM3');
+        }
+    </script>
+</apex:page>
